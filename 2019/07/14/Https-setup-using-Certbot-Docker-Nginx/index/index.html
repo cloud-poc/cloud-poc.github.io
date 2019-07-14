@@ -95,20 +95,21 @@
 
 
 
-  <meta name="description" content="背景介绍很多时候我们由于great firewall，我们无法访问某些网站，这时候就需要用到网络代理来应对一些比较urgent的case，本文主要会介绍如何使用Shadowsocks 和 Proxychain来 setup linux network proxy，这样在命令行下都可以起到代理和转发的作用，而不仅限于浏览器的代理。 SS server &amp;amp; SS local的配置预置条件 In">
-<meta name="keywords" content="Shadowsocks,Proxychain,Proxy">
+  <meta name="description" content="BackgroundLet’s Encrypt is a certificate authority that provides X.509 certificates for Transport Layer Security (TLS) encryption at no charge,The certificate is valid for 90 days, during which renewa">
+<meta name="keywords" content="Certbot,Let’s Encrypt,Nginx">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Linux network proxy setup for desktop and terminal">
-<meta property="og:url" content="https://cloud-poc.github.io/2019/07/14/Linux-network-proxy-setup-desktop-and-terminal/index/index.html">
+<meta property="og:title" content="Free CA Certs setup using Certbot + Docker + Nginx">
+<meta property="og:url" content="https://cloud-poc.github.io/2019/07/14/Https-setup-using-Certbot-Docker-Nginx/index/index.html">
 <meta property="og:site_name" content="Jamie&#39;s Blog">
-<meta property="og:description" content="背景介绍很多时候我们由于great firewall，我们无法访问某些网站，这时候就需要用到网络代理来应对一些比较urgent的case，本文主要会介绍如何使用Shadowsocks 和 Proxychain来 setup linux network proxy，这样在命令行下都可以起到代理和转发的作用，而不仅限于浏览器的代理。 SS server &amp;amp; SS local的配置预置条件 In">
+<meta property="og:description" content="BackgroundLet’s Encrypt is a certificate authority that provides X.509 certificates for Transport Layer Security (TLS) encryption at no charge,The certificate is valid for 90 days, during which renewa">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="https://cloud-poc.github.io/2019/07/14/Linux-network-proxy-setup-desktop-and-terminal/index/15532408-1405d25f0bcee21b.png">
-<meta property="og:updated_time" content="2019-07-14T07:24:53.260Z">
+<meta property="og:image" content="https://cloud-poc.github.io/2019/07/14/Https-setup-using-Certbot-Docker-Nginx/index/20190714194434.png">
+<meta property="og:image" content="https://cloud-poc.github.io/2019/07/14/Https-setup-using-Certbot-Docker-Nginx/index/20190714195417.png">
+<meta property="og:updated_time" content="2019-07-14T12:00:10.839Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Linux network proxy setup for desktop and terminal">
-<meta name="twitter:description" content="背景介绍很多时候我们由于great firewall，我们无法访问某些网站，这时候就需要用到网络代理来应对一些比较urgent的case，本文主要会介绍如何使用Shadowsocks 和 Proxychain来 setup linux network proxy，这样在命令行下都可以起到代理和转发的作用，而不仅限于浏览器的代理。 SS server &amp;amp; SS local的配置预置条件 In">
-<meta name="twitter:image" content="https://cloud-poc.github.io/2019/07/14/Linux-network-proxy-setup-desktop-and-terminal/index/15532408-1405d25f0bcee21b.png">
+<meta name="twitter:title" content="Free CA Certs setup using Certbot + Docker + Nginx">
+<meta name="twitter:description" content="BackgroundLet’s Encrypt is a certificate authority that provides X.509 certificates for Transport Layer Security (TLS) encryption at no charge,The certificate is valid for 90 days, during which renewa">
+<meta name="twitter:image" content="https://cloud-poc.github.io/2019/07/14/Https-setup-using-Certbot-Docker-Nginx/index/20190714194434.png">
 
 
 
@@ -116,7 +117,7 @@
 
   
   
-  <link rel="canonical" href="https://cloud-poc.github.io/2019/07/14/Linux-network-proxy-setup-desktop-and-terminal/index/">
+  <link rel="canonical" href="https://cloud-poc.github.io/2019/07/14/Https-setup-using-Certbot-Docker-Nginx/index/">
 
 
 
@@ -126,7 +127,7 @@
   };
 </script>
 
-  <title>Linux network proxy setup for desktop and terminal | Jamie's Blog</title>
+  <title>Free CA Certs setup using Certbot + Docker + Nginx | Jamie's Blog</title>
   
 
 
@@ -383,7 +384,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://cloud-poc.github.io/2019/07/14/Linux-network-proxy-setup-desktop-and-terminal/index/">
+    <link itemprop="mainEntityOfPage" href="https://cloud-poc.github.io/2019/07/14/Https-setup-using-Certbot-Docker-Nginx/index/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jamie Zhang">
@@ -400,7 +401,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Linux network proxy setup for desktop and terminal
+          <h1 class="post-title" itemprop="name headline">Free CA Certs setup using Certbot + Docker + Nginx
 
               
             
@@ -426,7 +427,7 @@
                 
               
 
-              <time title="Created: 2019-07-14 14:50:52 / Modified: 15:24:53" itemprop="dateCreated datePublished" datetime="2019-07-14T14:50:52+08:00">2019-07-14</time>
+              <time title="Created: 2019-07-14 19:13:00 / Modified: 20:00:10" itemprop="dateCreated datePublished" datetime="2019-07-14T19:13:00+08:00">2019-07-14</time>
             </span>
           
 
@@ -485,61 +486,73 @@
       
 
       
-        <h3 id="背景介绍"><a href="#背景介绍" class="headerlink" title="背景介绍"></a>背景介绍</h3><p>很多时候我们由于great firewall，我们无法访问某些网站，这时候就需要用到网络代理来应对一些比较urgent的case，本文主要会介绍如何使用Shadowsocks 和 Proxychain来 setup linux network proxy，这样在命令行下都可以起到代理和转发的作用，而不仅限于浏览器的代理。</p>
-<h3 id="SS-server-amp-SS-local的配置"><a href="#SS-server-amp-SS-local的配置" class="headerlink" title="SS server &amp; SS local的配置"></a>SS server &amp; SS local的配置</h3><h4 id="预置条件"><a href="#预置条件" class="headerlink" title="预置条件"></a>预置条件</h4><ul>
-<li>Install Python 3 + pip, 安装命令如下：<blockquote>
-<p>sudo apt-get install python3-pip</p>
-</blockquote>
+        <h4 id="Background"><a href="#Background" class="headerlink" title="Background"></a>Background</h4><p><strong>Let’s Encrypt</strong> is a <a href="https://en.wikipedia.org/wiki/Certificate_authority" title="Certificate authority" target="_blank" rel="noopener">certificate authority</a> that provides <a href="https://en.wikipedia.org/wiki/X.509" title="X.509" target="_blank" rel="noopener">X.509</a> <a href="https://en.wikipedia.org/wiki/Public_key_certificate" title="Public key certificate" target="_blank" rel="noopener">certificates</a> for <a href="https://en.wikipedia.org/wiki/Transport_Layer_Security" title="Transport Layer Security" target="_blank" rel="noopener">Transport Layer Security</a> (TLS) encryption at no charge,The certificate is valid for 90 days, during which renewal can take place at anytime.<br>这样我们就可以用上免费的CA cert来 安全expose我们自己的网站或者服务</p>
+<p><strong>基本的http和https</strong>知识请阅读<a href="https://linuxstory.org/deploy-lets-encrypt-ssl-certificate-with-certbot/的‘背景知识’部分，作者讲述的非常很不错。" target="_blank" rel="noopener">https://linuxstory.org/deploy-lets-encrypt-ssl-certificate-with-certbot/的‘背景知识’部分，作者讲述的非常很不错。</a></p>
+<h4 id="Objectives"><a href="#Objectives" class="headerlink" title="Objectives"></a>Objectives</h4><p>通过例子来demo如何生成和使用Internet Security Research Group推出的Let’s Encrypt 免费证书<br>主要涉及如下：</p>
+<ol>
+<li>Docker, docker-compose用来部署nginx</li>
+<li>Certbot，用来为域名生成CA证书</li>
+</ol>
+<h4 id="Not-In-Scope"><a href="#Not-In-Scope" class="headerlink" title="Not In Scope"></a>Not In Scope</h4><ol>
+<li>Docker 和docker compose的相关概念和安装，请参考<a href="https://docs.docker.com/install/linux/docker-ce/ubuntu/" target="_blank" rel="noopener">docker官方文档</a></li>
+</ol>
+<h4 id="Steps"><a href="#Steps" class="headerlink" title="Steps"></a>Steps</h4><h5 id="生成CA证书"><a href="#生成CA证书" class="headerlink" title="生成CA证书"></a>生成CA证书</h5><ul>
+<li><p>安装Certbot 客户端</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">wget https:<span class="string">//dl.eff.org/certbot-auto</span></span><br><span class="line">chmod a+x <span class="string">./certbot-auto</span></span><br><span class="line"><span class="string">./certbot-auto</span> <span class="params">--help</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>验证域名所有权<br> 该步骤需要启动nginx<br>a. 准备docker-compose file</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">version</span>: <span class="string">'3.0'</span></span><br><span class="line"><span class="attribute">services</span>:</span><br><span class="line">  <span class="attribute">nginx</span>:</span><br><span class="line">    <span class="attribute">restart</span>: always</span><br><span class="line">    <span class="attribute">image</span>: <span class="attribute">nginx</span>:<span class="number">1.15</span>.<span class="number">6</span></span><br><span class="line">    <span class="attribute">ports</span>:</span><br><span class="line">     - <span class="number">80</span>:<span class="number">80</span></span><br><span class="line">     - <span class="number">443</span>:<span class="number">443</span></span><br><span class="line">    <span class="attribute">volumes</span>:</span><br><span class="line">     - ./conf.<span class="attribute">d</span>:/etc/nginx/conf.d</span><br><span class="line">     - ./<span class="attribute">log</span>:/var/log/nginx</span><br><span class="line">     - ./<span class="attribute">wwwroot</span>:/var/www</span><br><span class="line">     - /etc/<span class="attribute">letsencrypt</span>:/etc/letsencrypt</span><br></pre></td></tr></table></figure>
+
 </li>
 </ul>
-<p><em>如果得到no packages found - python3-pip的错误，请添加相应的apt sources. 修改/etc/apt/sources.list文件，添加如下4条source信息</em></p>
-<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">deb</span> http://<span class="meta">cn</span>.archive.ubuntu.com/ubuntu <span class="keyword">bionic </span>main <span class="keyword">multiverse </span>restricted universe</span><br><span class="line"><span class="symbol">deb</span> http://<span class="meta">cn</span>.archive.ubuntu.com/ubuntu <span class="keyword">bionic-updates </span>main <span class="keyword">multiverse </span>restricted universe</span><br><span class="line"><span class="symbol">deb</span> http://<span class="meta">cn</span>.archive.ubuntu.com/ubuntu <span class="keyword">bionic-security </span>main <span class="keyword">multiverse </span>restricted universe</span><br><span class="line"><span class="symbol">deb</span> http://<span class="meta">cn</span>.archive.ubuntu.com/ubuntu <span class="keyword">bionic-proposed </span>main <span class="keyword">multiverse </span>restricted universe</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p> <strong>Docker volume的映射关系</strong><br>./conf.d nginx的配置所在<br>./log 日志文件位置<br>./wwwroot 项目路径<br>/etc/letsencrypt CA cert的父目录</p>
+</blockquote>
+<p>b. nginx 配置文件 .conf.d/app.conf</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">    <span class="attribute">listen</span>   <span class="number">80</span>;</span><br><span class="line">    <span class="attribute">server_name</span>   domain.com;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">location</span><span class="regexp"> ^~</span> /.well-known/acme-challenge/ &#123;</span><br><span class="line">       <span class="attribute">default_type</span> <span class="string">"text/plain"</span>;</span><br><span class="line">       <span class="attribute">root</span>     /var/www;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">location</span> = /.well-known/acme-challenge/ &#123;</span><br><span class="line">       <span class="attribute">return</span> <span class="number">404</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<ul>
-<li>Install Shadowsocks</li>
-<li>一台可以访问<strong>外网</strong>的云主机，Azure/AWS/Alicloud-HK等都可以<blockquote>
-<p>sudo pip install shadowsocks</p>
+<blockquote>
+<p>PS:<br>如上两个location配置是为了通过 Let’s Encrypt 的验证，验证域名归属</p>
 </blockquote>
-<h4 id="SSServer的配置和启动"><a href="#SSServer的配置和启动" class="headerlink" title="SSServer的配置和启动"></a>SSServer的配置和启动</h4>在云主机上创建sss 配置文件shadowsocks.json(推荐放置在/etc/shadowsocks/ 下面)，其内容如下：<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"server"</span>:<span class="string">"0.0.0.0"</span>,</span><br><span class="line">  <span class="attr">"server_port"</span>:<span class="string">"&#123;port&#125;"</span>,</span><br><span class="line">  <span class="attr">"local_address"</span>:<span class="string">"127.0.0.1"</span>,</span><br><span class="line">  <span class="attr">"local_port"</span>:<span class="string">"1080"</span>,</span><br><span class="line">  <span class="attr">"password"</span>:<span class="string">"&#123;password&#125;"</span>,</span><br><span class="line">  <span class="attr">"timeout"</span>:<span class="number">1000</span>,</span><br><span class="line">  <span class="attr">"method"</span>:<span class="string">"aes-256-cfb"</span>,</span><br><span class="line">  <span class="attr">"fast_open"</span>:<span class="literal">false</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>c. 启动nginx</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">root@aws-techpoc-c02:~/web# ls conf.d/app.conf</span><br><span class="line">root@aws-techpoc-c02:~/web# ls wwwroot/</span><br><span class="line">index.html</span><br><span class="line">root@aws-techpoc-c02:~/web# docker-compose up -d</span><br><span class="line">Creating<span class="built_in"> network </span><span class="string">"web_default"</span> with the<span class="built_in"> default </span>driver</span><br><span class="line">Creating web_nginx_1 <span class="built_in">..</span>.</span><br><span class="line">Creating web_nginx_1 <span class="built_in">..</span>. done</span><br></pre></td></tr></table></figure>
 
-</li>
-</ul>
-<p>ip,port,password这三个参数是必须参数<br>配置好这个配置文件后，运行命令然SSS服务运行起来</p>
-<blockquote>
-<p>nohup ssserver -c /etc/shadowsocks/shadowsocks.json start &amp;</p>
-</blockquote>
-<h4 id="SSLocal的配置和启动"><a href="#SSLocal的配置和启动" class="headerlink" title="SSLocal的配置和启动"></a>SSLocal的配置和启动</h4><p>在配置好了服务端之后，我们就可以开始配置客户端了，客户端也需要一个基本类似的配置文件，当然了你可以在windows或者手机上用shadowsocks的客户端来实现客户端代理，这个不是本文的重点<br>在本地的linux机上创建shadowsocks.json，配置内容如下：</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"server"</span>:<span class="string">"xxxx"</span>,</span><br><span class="line">  <span class="attr">"local_address"</span>: <span class="string">"127.0.0.1"</span>,</span><br><span class="line">  <span class="attr">"local_port"</span>:<span class="number">1080</span>,</span><br><span class="line">  <span class="attr">"server_port"</span>:xxxx,</span><br><span class="line">  <span class="attr">"password"</span>:<span class="string">"xxxx"</span>,</span><br><span class="line">  <span class="attr">"timeout"</span>:<span class="number">300</span>,</span><br><span class="line">  <span class="attr">"method"</span>:<span class="string">"aes-256-cfb"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>d. 生成Cert</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./certbot-auto certonly -d domain1.<span class="keyword">com</span> domain2.<span class="keyword">com</span></span><br></pre></td></tr></table></figure>
 
-<p>完成配置后，命令运行起来</p>
+<p><em>该步骤过程中会自动运行和安装很多linux的以来包，不用干预，其中有两布需要注意：<br>i.选择用standalone的方式运行还是webroot，一般80端口已经备用了，无法使用standalone，所以选择webroot方式，然后输入webroot的地址，及上面指定的主机项目目录，如本例，/root/web/wwwroot<br>2.有一步要求输入邮箱地址的提示，照着输入自己的邮箱即可，顺利完成的话，屏幕上会有提示信息。<br>最后，证书成功成功后，会有如下信息:</em><br>IMPORTANT NOTES:<br> Congratulations! Your certificate and chain have been saved at<br>   /etc/letsencrypt/live/<strong>&lt;domain.com&gt;</strong>/fullchain.pem. Your cert<br>   will expire on xxxx-xx-xxxx. To obtain a new version of the<br>   certificate in the future, simply run Let’s Encrypt again.<br>至此，证书就生成好了，接下来就可以去配置nginx ssl监听了</p>
+<h5 id="配置SSL监听-for-Nginx"><a href="#配置SSL监听-for-Nginx" class="headerlink" title="配置SSL监听 for Nginx"></a>配置SSL监听 for Nginx</h5><p>a. 修改nginx配置文件</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">        <span class="attribute">listen</span>   <span class="number">443</span> ssl;</span><br><span class="line">        <span class="attribute">server_name</span>  domain.com;</span><br><span class="line">        <span class="attribute">ssl_certificate</span>        /etc/letsencrypt/live/domain.com/fullchain.pem;</span><br><span class="line">        <span class="attribute">ssl_certificate_key</span>    /etc/letsencrypt/live/domain.com/privkey.pem;</span><br><span class="line"></span><br><span class="line">        <span class="attribute">location</span> / &#123;</span><br><span class="line">            <span class="attribute">root</span> /var/www;</span><br><span class="line">            <span class="attribute">index</span> index.jsp index.html index.htm index.php;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="attribute">location</span> /proxy/ &#123;</span><br><span class="line">            <span class="attribute">root</span> /var/www;</span><br><span class="line">            <span class="attribute">index</span> index.jsp index.html index.htm index.php;</span><br><span class="line">            <span class="attribute">proxy_set_header</span> X-Real-IP <span class="variable">$remote_addr</span>;</span><br><span class="line">            <span class="attribute">proxy_set_header</span> X-Forwarded-For <span class="variable">$proxy_add_x_forwarded_for</span>;</span><br><span class="line">            <span class="attribute">proxy_set_header</span> Host <span class="variable">$http_host</span>;</span><br><span class="line"></span><br><span class="line">            <span class="attribute">proxy_pass</span> http://172.19.0.1:8080/;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="attribute">error_page</span>   <span class="number">500</span> <span class="number">502</span> <span class="number">503</span> <span class="number">504</span>  /50x.html;</span><br><span class="line"></span><br><span class="line">        <span class="attribute">location</span> = /50x.html &#123;</span><br><span class="line">            <span class="attribute">root</span>   /usr/share/nginx/html;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">        <span class="attribute">listen</span>   <span class="number">80</span>;</span><br><span class="line">        <span class="attribute">server_name</span>   domain.com www.domain.com;</span><br><span class="line">        <span class="attribute">return</span> <span class="number">301</span> https://<span class="variable">$server_name</span><span class="variable">$request_uri</span>;            </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <blockquote>
-<p>nohup sslocal -c shadowsocks.json &amp;</p>
+<p>proxy_pass 指定代理地址，注意代理地址后面有没有’/‘,区别很大</p>
 </blockquote>
-<p>到此，我们可以通过设置linux系统环境变量达到浏览器network代理的目的,这距离我们的最终目标命令行下的网络代理更近一步了</p>
+<p>b. [optional]准备一个测试的html，用来检测nginx配置是否正常，./wwwroot/index.html</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">title</span>&gt;</span>TEST WebSite<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;/<span class="name">head</span>&gt;</span>    </span><br><span class="line">   <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">div</span>&gt;</span>Hello, this is a test web site<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>c. Reload nginx config</p>
+<figure class="highlight mel"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="keyword">container</span> <span class="keyword">exec</span> &lt;<span class="keyword">container</span>&gt; nginx -s reload</span><br></pre></td></tr></table></figure>
+
+<p>然后就可以去测试了，https://&lt;domain.com&gt;,如果成功可以显示那个test html page，如果有问题，请使用docker logs -f <container>,或者查看日志目录先access.log 和 error.log</container></p>
+<h4 id="Cert-Renew"><a href="#Cert-Renew" class="headerlink" title="Cert Renew"></a>Cert Renew</h4><p>Let’s Encrypt 签发的证书有效期只有 90 天，所以需要每隔三个月就要更新一次安全证书,为了能让你的网站能被安全的保护起来，所以是非常有必要去更新cert的。certbot-auto 支持手动和自动更新两种cert更新模式，我们来测试一下这两种模式<br>首先运行测试一下能否更新,调试模式，不是真的更新</p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./certbot-<span class="keyword">auto</span> renew --dry-<span class="built_in">run</span></span><br></pre></td></tr></table></figure>
+
+<p>获得的结果截图如下<br><img src="//cloud-poc.github.io/2019/07/14/Https-setup-using-Certbot-Docker-Nginx/index/20190714194434.png" style="margin-left:20px"></p>
+<p>手动更新模式：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./certbot-<span class="keyword">auto</span> renew -v</span><br></pre></td></tr></table></figure>
+
+<p>自动更新模式：</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">./certbot-auto</span> renew <span class="params">--quiet</span> <span class="params">--no-self-upgrade</span></span><br></pre></td></tr></table></figure>
+
 <blockquote>
-<p>export http_proxy=127.0.0.1:1080<br>export https_proxy=127.0.0.1:1080<br>export no_proxy=localhost, 127.0.0.1</p>
+<p>PS:该部分一般有运维人员集中进行处理，CA证书自动生成后还需要被加载一下去刷新，在本例中，需要运行docker container exec <container> nginx -s reload 去刷新</container></p>
 </blockquote>
-<p>接下来我们进行proxychain的安装和配置</p>
-<h3 id="Proxychain的配置"><a href="#Proxychain的配置" class="headerlink" title="Proxychain的配置"></a>Proxychain的配置</h3><h4 id="Install-proxychain"><a href="#Install-proxychain" class="headerlink" title="Install proxychain"></a>Install proxychain</h4><blockquote>
-<p>git clone <a href="https://github.com/rofl0r/proxychains-ng" target="_blank" rel="noopener">https://github.com/rofl0r/proxychains-ng</a><br>  cd proxychains-ng<br>  ./configure –prefix=/usr –sysconfdir=/etc<br>  make<br>  make install<br>  make install-config<br>按步骤执行如上命令完成后，proxychain安装完成，并且默认的配置为：/etc/proxychains.conf</p>
-</blockquote>
-<h4 id="Update-proxychain的代理列表"><a href="#Update-proxychain的代理列表" class="headerlink" title="Update proxychain的代理列表"></a>Update proxychain的代理列表</h4><blockquote>
-<p>vim /etc/proxychains.conf<br>在文件尾部增加一行：socks5    127.0.0.1  1080<br><img src="//cloud-poc.github.io/2019/07/14/Linux-network-proxy-setup-desktop-and-terminal/index/15532408-1405d25f0bcee21b.png" style="margin-left:25px"><br>现在你可以测试了，测试命令如下：<br>proxychains4 curl <a href="https://www.google.com" target="_blank" rel="noopener">https://www.google.com</a></p>
-</blockquote>
-<p>如果你能看到服务器返回了html相关的东西，说明代理是工作的，恭喜你<br>截至目前，你可以做到在命令下来代理网络了，可以应对很多的使用场景了，但是依然有场景你无法满足，例如，在某个应用的内需要走代理，前提是你无法添加proxychains4的前缀，如docker daemon里面去下载image，这时候需要一个‘全局’的代理，使到全部的流量都走代理，不管是inbound或者outbound，你会问可以做到吗？<br>答案是Yes，很简单，只需要一个命令去打开bash并在这个bash下面所有的流量都走代理</p>
-<blockquote>
-<p>proxychains4 -q /bin/bash</p>
-</blockquote>
-<p>到此为止，我们基本实现了基于浏览器代理和命令行下的全局代理，自己去试试吧，good luck</p>
-<p>最后一点补充，可以把SS做成linux服务，这样随系统启动使用起来会更加的方便，做法如下：</p>
-<blockquote>
-<p>sudo vim /etc/systemd/system/shadowsocks.service<br>内容如下：<br><em>[Unit]<br>Description=Shadowsocks Client Service<br>After=network.target<br>[Service]<br>Type=simple<br>User=root<br>ExecStart=/usr/local/bin/sslocal -c /xxx/shadowsocks.json<br>        [Install]<br>WantedBy=multi-user.target</em></p>
-</blockquote>
-<p>开发SS的linux服务</p>
-<blockquote>
-<p>systemctl enable /etc/systemd/system/shadowsocks.service</p>
-</blockquote>
-<p>然后就可以像其他linux服务那样使用 systemctl来管理了<br>如果在上述添加SS服务的过程中遇到这个错误的话<br>/usr/lib/x86_64-linux-gnu/libcrypto.so.1.1: undefined symbol: EVP_CIPHER<br>请修改/usr/local/lib/python3.6/dist-packages/shadowsocks/crypto/openssl.py，更新第55行和111行<br>将libcrypto.EVP_CIPHER_CTX_cleanup(self._ctx) 修改为 <label style="color:blue">libcrypto.EVP_CIPHER_CTX_reset(self._ctx)</label></p>
+<p>更新后的结果展示<br><img src="//cloud-poc.github.io/2019/07/14/Https-setup-using-Certbot-Docker-Nginx/index/20190714195417.png" style="margin-left:20px"></p>
+<p>Q&amp;A:</p>
+<ol>
+<li>policy-forbids-issuing-for-name-on-amazon-ec2-domain<br><a href="https://community.letsencrypt.org/t/policy-forbids-issuing-for-name-on-amazon-ec2-domain/12692/3" target="_blank" rel="noopener">issue related post</a><br>amazonaws.com happens to be on the blacklist Let’s Encrypt uses for high-risk domain names，及无法使用free cert for aws，可以考虑使用route53</li>
+</ol>
+<p>Related posts:<br><a href="https://linuxstory.org/deploy-lets-encrypt-ssl-certificate-with-certbot/" target="_blank" rel="noopener">https://linuxstory.org/deploy-lets-encrypt-ssl-certificate-with-certbot/</a><br><a href="https://www.jianshu.com/p/c136c7ec2572" target="_blank" rel="noopener">https://www.jianshu.com/p/c136c7ec2572</a></p>
 
       
     </div>
@@ -578,7 +591,7 @@
   <li class="post-copyright-link">
     <strong>Post link: </strong>
     
-    <a href="https://cloud-poc.github.io/2019/07/14/Linux-network-proxy-setup-desktop-and-terminal/index/" title="Linux network proxy setup for desktop and terminal">https://cloud-poc.github.io/2019/07/14/Linux-network-proxy-setup-desktop-and-terminal/index/</a>
+    <a href="https://cloud-poc.github.io/2019/07/14/Https-setup-using-Certbot-Docker-Nginx/index/" title="Free CA Certs setup using Certbot + Docker + Nginx">https://cloud-poc.github.io/2019/07/14/Https-setup-using-Certbot-Docker-Nginx/index/</a>
   </li>
   <li class="post-copyright-license">
     <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.</li>
@@ -594,11 +607,11 @@
         
         <div class="post-tags">
           
-            <a href="/tags/Shadowsocks/" rel="tag"><i class="fa fa-tag"></i> Shadowsocks</a>
+            <a href="/tags/Certbot/" rel="tag"><i class="fa fa-tag"></i> Certbot</a>
           
-            <a href="/tags/Proxychain/" rel="tag"><i class="fa fa-tag"></i> Proxychain</a>
+            <a href="/tags/Let’s-Encrypt/" rel="tag"><i class="fa fa-tag"></i> Let’s Encrypt</a>
           
-            <a href="/tags/Proxy/" rel="tag"><i class="fa fa-tag"></i> Proxy</a>
+            <a href="/tags/Nginx/" rel="tag"><i class="fa fa-tag"></i> Nginx</a>
           
         </div>
       
@@ -611,8 +624,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/07/14/Harshicorp-vault-setup-Config/index/" rel="next" title="Harshicorp vault setup & Config">
-                <i class="fa fa-chevron-left"></i> Harshicorp vault setup & Config
+              <a href="/2019/07/14/Linux-network-proxy-setup-desktop-and-terminal/index/" rel="next" title="Linux network proxy setup for desktop and terminal">
+                <i class="fa fa-chevron-left"></i> Linux network proxy setup for desktop and terminal
               </a>
             
           </div>
@@ -620,10 +633,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/07/14/Https-setup-using-Certbot-Docker-Nginx/index/" rel="prev" title="Free CA Certs setup using Certbot + Docker + Nginx">
-                Free CA Certs setup using Certbot + Docker + Nginx <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -820,7 +829,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#背景介绍"><span class="nav-number">1.</span> <span class="nav-text">背景介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SS-server-amp-SS-local的配置"><span class="nav-number">2.</span> <span class="nav-text">SS server &amp; SS local的配置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#预置条件"><span class="nav-number">2.1.</span> <span class="nav-text">预置条件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SSServer的配置和启动"><span class="nav-number">2.2.</span> <span class="nav-text">SSServer的配置和启动</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SSLocal的配置和启动"><span class="nav-number">2.3.</span> <span class="nav-text">SSLocal的配置和启动</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Proxychain的配置"><span class="nav-number">3.</span> <span class="nav-text">Proxychain的配置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Install-proxychain"><span class="nav-number">3.1.</span> <span class="nav-text">Install proxychain</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Update-proxychain的代理列表"><span class="nav-number">3.2.</span> <span class="nav-text">Update proxychain的代理列表</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#Background"><span class="nav-number">1.</span> <span class="nav-text">Background</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Objectives"><span class="nav-number">2.</span> <span class="nav-text">Objectives</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Not-In-Scope"><span class="nav-number">3.</span> <span class="nav-text">Not In Scope</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Steps"><span class="nav-number">4.</span> <span class="nav-text">Steps</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#生成CA证书"><span class="nav-number">4.1.</span> <span class="nav-text">生成CA证书</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#配置SSL监听-for-Nginx"><span class="nav-number">4.2.</span> <span class="nav-text">配置SSL监听 for Nginx</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Cert-Renew"><span class="nav-number">5.</span> <span class="nav-text">Cert Renew</span></a></li></ol></div>
             
 
           </div>
