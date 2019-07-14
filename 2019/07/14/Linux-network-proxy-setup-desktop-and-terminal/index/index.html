@@ -95,17 +95,20 @@
 
 
 
-  <meta name="description" content="Jamie，Senior Software Engineer, Open source enthusiasts, PMP,Scrum master">
-<meta name="keywords" content="Jamie Zhang, akjamie, Cloud native,云原生,PaaS, Istio, Kubernetes, 微服务, Microservice, Mulesoft, Docker">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Jamie&#39;s Blog">
-<meta property="og:url" content="https://cloud-poc.github.io/tags/Harshicorp/index.html">
+  <meta name="description" content="背景介绍很多时候我们由于great firewall，我们无法访问某些网站，这时候就需要用到网络代理来应对一些比较urgent的case，本文主要会介绍如何使用Shadowsocks 和 Proxychain来 setup linux network proxy，这样在命令行下都可以起到代理和转发的作用，而不仅限于浏览器的代理。 SS server &amp;amp; SS local的配置预置条件 In">
+<meta name="keywords" content="Shadowsocks,Proxychain,Proxy">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux network proxy setup for desktop and terminal">
+<meta property="og:url" content="https://cloud-poc.github.io/2019/07/14/Linux-network-proxy-setup-desktop-and-terminal/index/index.html">
 <meta property="og:site_name" content="Jamie&#39;s Blog">
-<meta property="og:description" content="Jamie，Senior Software Engineer, Open source enthusiasts, PMP,Scrum master">
+<meta property="og:description" content="背景介绍很多时候我们由于great firewall，我们无法访问某些网站，这时候就需要用到网络代理来应对一些比较urgent的case，本文主要会介绍如何使用Shadowsocks 和 Proxychain来 setup linux network proxy，这样在命令行下都可以起到代理和转发的作用，而不仅限于浏览器的代理。 SS server &amp;amp; SS local的配置预置条件 In">
 <meta property="og:locale" content="en">
+<meta property="og:image" content="https://cloud-poc.github.io/2019/07/14/Linux-network-proxy-setup-desktop-and-terminal/index/15532408-1405d25f0bcee21b.png">
+<meta property="og:updated_time" content="2019-07-14T07:09:32.255Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Jamie&#39;s Blog">
-<meta name="twitter:description" content="Jamie，Senior Software Engineer, Open source enthusiasts, PMP,Scrum master">
+<meta name="twitter:title" content="Linux network proxy setup for desktop and terminal">
+<meta name="twitter:description" content="背景介绍很多时候我们由于great firewall，我们无法访问某些网站，这时候就需要用到网络代理来应对一些比较urgent的case，本文主要会介绍如何使用Shadowsocks 和 Proxychain来 setup linux network proxy，这样在命令行下都可以起到代理和转发的作用，而不仅限于浏览器的代理。 SS server &amp;amp; SS local的配置预置条件 In">
+<meta name="twitter:image" content="https://cloud-poc.github.io/2019/07/14/Linux-network-proxy-setup-desktop-and-terminal/index/15532408-1405d25f0bcee21b.png">
 
 
 
@@ -113,7 +116,7 @@
 
   
   
-  <link rel="canonical" href="https://cloud-poc.github.io/tags/Harshicorp/">
+  <link rel="canonical" href="https://cloud-poc.github.io/2019/07/14/Linux-network-proxy-setup-desktop-and-terminal/index/">
 
 
 
@@ -123,7 +126,7 @@
   };
 </script>
 
-  <title>Tag: Harshicorp | Jamie's Blog</title>
+  <title>Linux network proxy setup for desktop and terminal | Jamie's Blog</title>
   
 
 
@@ -171,7 +174,7 @@
     
   
 
-  <div class="container sidebar-position-right ">
+  <div class="container sidebar-position-right page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -231,7 +234,7 @@
         
         
           
-          <li class="menu-item menu-item-tags menu-item-active">
+          <li class="menu-item menu-item-tags">
 
     
     
@@ -360,83 +363,291 @@
           
             
 
-    
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-    
-
-  
-
-
           
           <div id="content" class="content">
             
 
-  
-  
-  
-  <div class="post-block tag">
+  <div id="posts" class="posts-expand">
+    
 
-    <div id="posts" class="posts-collapse">
-      <div class="collection-title">
-        <h1>Harshicorp<small>Tag</small>
-        </h1>
-      </div>
+  
 
-      
-        
+  
+  
+  
+
+  
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://cloud-poc.github.io/2019/07/14/Linux-network-proxy-setup-desktop-and-terminal/index/">
 
-      <h2 class="post-title">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jamie Zhang">
+      <meta itemprop="description" content="Jamie，Senior Software Engineer, Open source enthusiasts, PMP,Scrum master">
+      <meta itemprop="image" content="/images/20190713213835-3.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jamie's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
         
-          <a class="post-title-link" href="/2019/07/14/Harshicorp-vault-setup-Config/index/" itemprop="url">
-            
-              <span itemprop="name">Harshicorp vault setup & Config</span>
-            
-          </a>
         
-      </h2>
+          <h1 class="post-title" itemprop="name headline">Linux network proxy setup for desktop and terminal
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-07-14T09:08:03+08:00" content="2019-07-14">
-          07-14
-        </time>
-      </div>
+              
+            
+          </h1>
+        
 
-    </header>
-  </article>
+        <div class="post-meta">
 
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-07-14 14:50:52 / Modified: 15:09:32" itemprop="dateCreated datePublished" datetime="2019-07-14T14:50:52+08:00">2019-07-14</time>
+            </span>
+          
+
+          
+            
+
+            
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Infra/" itemprop="url" rel="index"><span itemprop="name">Infra</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="背景介绍"><a href="#背景介绍" class="headerlink" title="背景介绍"></a>背景介绍</h3><p>很多时候我们由于great firewall，我们无法访问某些网站，这时候就需要用到网络代理来应对一些比较urgent的case，本文主要会介绍如何使用Shadowsocks 和 Proxychain来 setup linux network proxy，这样在命令行下都可以起到代理和转发的作用，而不仅限于浏览器的代理。</p>
+<h3 id="SS-server-amp-SS-local的配置"><a href="#SS-server-amp-SS-local的配置" class="headerlink" title="SS server &amp; SS local的配置"></a>SS server &amp; SS local的配置</h3><h4 id="预置条件"><a href="#预置条件" class="headerlink" title="预置条件"></a>预置条件</h4><ul>
+<li>Install Python 3 + pip, 安装命令如下：<blockquote>
+<p>sudo apt-get install python3-pip</p>
+</blockquote>
+</li>
+</ul>
+<p><em>如果得到no packages found - python3-pip的错误，请添加相应的apt sources. 修改/etc/apt/sources.list文件，添加如下4条source信息</em></p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">deb</span> http://<span class="meta">cn</span>.archive.ubuntu.com/ubuntu <span class="keyword">bionic </span>main <span class="keyword">multiverse </span>restricted universe</span><br><span class="line"><span class="symbol">deb</span> http://<span class="meta">cn</span>.archive.ubuntu.com/ubuntu <span class="keyword">bionic-updates </span>main <span class="keyword">multiverse </span>restricted universe</span><br><span class="line"><span class="symbol">deb</span> http://<span class="meta">cn</span>.archive.ubuntu.com/ubuntu <span class="keyword">bionic-security </span>main <span class="keyword">multiverse </span>restricted universe</span><br><span class="line"><span class="symbol">deb</span> http://<span class="meta">cn</span>.archive.ubuntu.com/ubuntu <span class="keyword">bionic-proposed </span>main <span class="keyword">multiverse </span>restricted universe</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Install Shadowsocks</li>
+<li>一台可以访问<strong>外网</strong>的云主机，Azure/AWS/Alicloud-HK等都可以<blockquote>
+<p>sudo pip install shadowsocks</p>
+</blockquote>
+<h4 id="SSServer的配置和启动"><a href="#SSServer的配置和启动" class="headerlink" title="SSServer的配置和启动"></a>SSServer的配置和启动</h4>在云主机上创建sss 配置文件shadowsocks.json(推荐放置在/etc/shadowsocks/ 下面)，其内容如下：<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	<span class="attr">"server"</span>:<span class="string">"0.0.0.0"</span>,</span><br><span class="line">	<span class="attr">"server_port"</span>:<span class="string">"&#123;port&#125;"</span>,</span><br><span class="line">	<span class="attr">"local_address"</span>:<span class="string">"127.0.0.1"</span>,</span><br><span class="line">	<span class="attr">"local_port"</span>:<span class="string">"1080"</span>,</span><br><span class="line">	<span class="attr">"password"</span>:<span class="string">"&#123;password&#125;"</span>,</span><br><span class="line">	<span class="attr">"timeout"</span>:<span class="number">1000</span>,</span><br><span class="line">	<span class="attr">"method"</span>:<span class="string">"aes-256-cfb"</span>,</span><br><span class="line">	<span class="attr">"fast_open"</span>:<span class="literal">false</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>ip,port,password这三个参数是必须参数<br>配置好这个配置文件后，运行命令然SSS服务运行起来</p>
+<blockquote>
+<p>nohup ssserver -c /etc/shadowsocks/shadowsocks.json start &amp;</p>
+</blockquote>
+<h4 id="SSLocal的配置和启动"><a href="#SSLocal的配置和启动" class="headerlink" title="SSLocal的配置和启动"></a>SSLocal的配置和启动</h4><p>在配置好了服务端之后，我们就可以开始配置客户端了，客户端也需要一个基本类似的配置文件，当然了你可以在windows或者手机上用shadowsocks的客户端来实现客户端代理，这个不是本文的重点<br>在本地的linux机上创建shadowsocks.json，配置内容如下：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"server"</span>:<span class="string">"xxxx"</span>,</span><br><span class="line">  <span class="attr">"local_address"</span>: <span class="string">"127.0.0.1"</span>,</span><br><span class="line">  <span class="attr">"local_port"</span>:<span class="number">1080</span>,</span><br><span class="line">  <span class="attr">"server_port"</span>:xxxx,</span><br><span class="line">  <span class="attr">"password"</span>:<span class="string">"xxxx"</span>,</span><br><span class="line">  <span class="attr">"timeout"</span>:<span class="number">300</span>,</span><br><span class="line">  <span class="attr">"method"</span>:<span class="string">"aes-256-cfb"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>完成配置后，命令运行起来</p>
+<blockquote>
+<p>nohup sslocal -c shadowsocks.json &amp;</p>
+</blockquote>
+<p>到此，我们可以通过设置linux系统环境变量达到浏览器network代理的目的,这距离我们的最终目标命令行下的网络代理更近一步了</p>
+<blockquote>
+<p>export http_proxy=127.0.0.1:1080<br>export https_proxy=127.0.0.1:1080<br>export no_proxy=localhost, 127.0.0.1</p>
+</blockquote>
+<p>接下来我们进行proxychain的安装和配置</p>
+<h3 id="Proxychain的配置"><a href="#Proxychain的配置" class="headerlink" title="Proxychain的配置"></a>Proxychain的配置</h3><h4 id="Install-proxychain"><a href="#Install-proxychain" class="headerlink" title="Install proxychain"></a>Install proxychain</h4><blockquote>
+<p>git clone <a href="https://github.com/rofl0r/proxychains-ng" target="_blank" rel="noopener">https://github.com/rofl0r/proxychains-ng</a><br>    cd proxychains-ng<br>    ./configure –prefix=/usr –sysconfdir=/etc<br>    make<br>    make install<br>    make install-config<br>按步骤执行如上命令完成后，proxychain安装完成，并且默认的配置为：/etc/proxychains.conf</p>
+</blockquote>
+<h4 id="Update-proxychain的代理列表"><a href="#Update-proxychain的代理列表" class="headerlink" title="Update proxychain的代理列表"></a>Update proxychain的代理列表</h4><blockquote>
+<p>vim /etc/proxychains.conf<br>在文件尾部增加一行：socks5    127.0.0.1  1080<br><img src="//cloud-poc.github.io/2019/07/14/Linux-network-proxy-setup-desktop-and-terminal/index/15532408-1405d25f0bcee21b.png" alt></p>
+</blockquote>
+<p>现在你可以测试了，测试命令如下：</p>
+<blockquote>
+<p>proxychains4 curl <a href="https://www.google.com" target="_blank" rel="noopener">https://www.google.com</a></p>
+</blockquote>
+<p>如果你能看到服务器返回了html相关的东西，说明代理是工作的，恭喜你<br>截至目前，你可以做到在命令下来代理网络了，可以应对很多的使用场景了，但是依然有场景你无法满足，例如，在某个应用的内需要走代理，前提是你无法添加proxychains4的前缀，如docker daemon里面去下载image，这时候需要一个‘全局’的代理，使到全部的流量都走代理，不管是inbound或者outbound，你会问可以做到吗？<br>答案是Yes，很简单，只需要一个命令去打开bash并在这个bash下面所有的流量都走代理</p>
+<blockquote>
+<p>proxychains4 -q /bin/bash</p>
+</blockquote>
+<p>到此为止，我们基本实现了基于浏览器代理和命令行下的全局代理，自己去试试吧，good luck</p>
+<p>最后一点补充，可以把SS做成linux服务，这样随系统启动使用起来会更加的方便，做法如下：</p>
+<blockquote>
+<p>sudo vim /etc/systemd/system/shadowsocks.service<br>内容如下：<br><em>[Unit]<br>Description=Shadowsocks Client Service<br>After=network.target<br>[Service]<br>Type=simple<br>User=root<br>ExecStart=/usr/local/bin/sslocal -c /xxx/shadowsocks.json<br>        [Install]<br>WantedBy=multi-user.target</em></p>
+</blockquote>
+<p>开发SS的linux服务</p>
+<blockquote>
+<p>systemctl enable /etc/systemd/system/shadowsocks.service</p>
+</blockquote>
+<p>然后就可以像其他linux服务那样使用 systemctl来管理了<br>如果在上述添加SS服务的过程中遇到这个错误的话<br>/usr/lib/x86_64-linux-gnu/libcrypto.so.1.1: undefined symbol: EVP_CIPHER<br>请修改/usr/local/lib/python3.6/dist-packages/shadowsocks/crypto/openssl.py，更新第55行和111行<br>将libcrypto.EVP_CIPHER_CTX_cleanup(self._ctx) 修改为 <label style="color:blue">libcrypto.EVP_CIPHER_CTX_reset(self._ctx)</label></p>
 
       
     </div>
 
+    
+
+    
+      
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Jamie Zhang</li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    
+    <a href="https://cloud-poc.github.io/2019/07/14/Linux-network-proxy-setup-desktop-and-terminal/index/" title="Linux network proxy setup for desktop and terminal">https://cloud-poc.github.io/2019/07/14/Linux-network-proxy-setup-desktop-and-terminal/index/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/Shadowsocks/" rel="tag"><i class="fa fa-tag"></i> Shadowsocks</a>
+          
+            <a href="/tags/Proxychain/" rel="tag"><i class="fa fa-tag"></i> Proxychain</a>
+          
+            <a href="/tags/Proxy/" rel="tag"><i class="fa fa-tag"></i> Proxy</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/14/Harshicorp-vault-setup-Config/index/" rel="next" title="Harshicorp vault setup & Config">
+                <i class="fa fa-chevron-left"></i> Harshicorp vault setup & Config
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
 
+  </div>
 
 
           </div>
           
+
+  
+
+
 
         </div>
         
@@ -456,8 +667,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
 
-      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <div class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -583,6 +803,23 @@
         </div>
       </div>
 
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#背景介绍"><span class="nav-number">1.</span> <span class="nav-text">背景介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SS-server-amp-SS-local的配置"><span class="nav-number">2.</span> <span class="nav-text">SS server &amp; SS local的配置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#预置条件"><span class="nav-number">2.1.</span> <span class="nav-text">预置条件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SSServer的配置和启动"><span class="nav-number">2.2.</span> <span class="nav-text">SSServer的配置和启动</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SSLocal的配置和启动"><span class="nav-number">2.3.</span> <span class="nav-text">SSLocal的配置和启动</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Proxychain的配置"><span class="nav-number">3.</span> <span class="nav-text">Proxychain的配置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Install-proxychain"><span class="nav-number">3.1.</span> <span class="nav-text">Install proxychain</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Update-proxychain的代理列表"><span class="nav-number">3.2.</span> <span class="nav-text">Update proxychain的代理列表</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
       
 
       
@@ -714,6 +951,10 @@
 
 
   
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
 
   <script src="/js/next-boot.js?v=7.2.0"></script>
 
@@ -727,6 +968,8 @@
 
   
 
+
+  
 
 
   
