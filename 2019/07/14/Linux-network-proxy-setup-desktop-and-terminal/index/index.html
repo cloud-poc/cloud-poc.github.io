@@ -104,8 +104,7 @@
 <meta property="og:description" content="背景介绍很多时候我们由于great firewall，我们无法访问某些网站，这时候就需要用到网络代理来应对一些比较urgent的case，本文主要会介绍如何使用Shadowsocks 和 Proxychain来 setup linux network proxy，这样在命令行下都可以起到代理和转发的作用，而不仅限于浏览器的代理。 SS server &amp;amp; SS local的配置预置条件 In">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="https://cloud-poc.github.io/2019/07/14/Linux-network-proxy-setup-desktop-and-terminal/index/15532408-1405d25f0bcee21b.png">
-<meta property="og:image" content="https://cloud-poc.github.io/2019/07/14/Linux-network-proxy-setup-desktop-and-terminal/index/15532408-1405d25f0bcee21b.png">
-<meta property="og:updated_time" content="2019-07-14T07:16:14.766Z">
+<meta property="og:updated_time" content="2019-07-14T07:24:53.260Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Linux network proxy setup for desktop and terminal">
 <meta name="twitter:description" content="背景介绍很多时候我们由于great firewall，我们无法访问某些网站，这时候就需要用到网络代理来应对一些比较urgent的case，本文主要会介绍如何使用Shadowsocks 和 Proxychain来 setup linux network proxy，这样在命令行下都可以起到代理和转发的作用，而不仅限于浏览器的代理。 SS server &amp;amp; SS local的配置预置条件 In">
@@ -427,7 +426,7 @@
                 
               
 
-              <time title="Created: 2019-07-14 14:50:52 / Modified: 15:16:14" itemprop="dateCreated datePublished" datetime="2019-07-14T14:50:52+08:00">2019-07-14</time>
+              <time title="Created: 2019-07-14 14:50:52 / Modified: 15:24:53" itemprop="dateCreated datePublished" datetime="2019-07-14T14:50:52+08:00">2019-07-14</time>
             </span>
           
 
@@ -525,11 +524,7 @@
 <p>git clone <a href="https://github.com/rofl0r/proxychains-ng" target="_blank" rel="noopener">https://github.com/rofl0r/proxychains-ng</a><br>  cd proxychains-ng<br>  ./configure –prefix=/usr –sysconfdir=/etc<br>  make<br>  make install<br>  make install-config<br>按步骤执行如上命令完成后，proxychain安装完成，并且默认的配置为：/etc/proxychains.conf</p>
 </blockquote>
 <h4 id="Update-proxychain的代理列表"><a href="#Update-proxychain的代理列表" class="headerlink" title="Update proxychain的代理列表"></a>Update proxychain的代理列表</h4><blockquote>
-<p>vim /etc/proxychains.conf<br>在文件尾部增加一行：socks5    127.0.0.1  1080<br><img src="//cloud-poc.github.io/2019/07/14/Linux-network-proxy-setup-desktop-and-terminal/index/15532408-1405d25f0bcee21b.png" height="274" width="118"><br><img src="//cloud-poc.github.io/2019/07/14/Linux-network-proxy-setup-desktop-and-terminal/index/15532408-1405d25f0bcee21b.png" alt></p>
-</blockquote>
-<p>现在你可以测试了，测试命令如下：</p>
-<blockquote>
-<p>proxychains4 curl <a href="https://www.google.com" target="_blank" rel="noopener">https://www.google.com</a></p>
+<p>vim /etc/proxychains.conf<br>在文件尾部增加一行：socks5    127.0.0.1  1080<br><img src="//cloud-poc.github.io/2019/07/14/Linux-network-proxy-setup-desktop-and-terminal/index/15532408-1405d25f0bcee21b.png" style="margin-left:25px"><br>现在你可以测试了，测试命令如下：<br>proxychains4 curl <a href="https://www.google.com" target="_blank" rel="noopener">https://www.google.com</a></p>
 </blockquote>
 <p>如果你能看到服务器返回了html相关的东西，说明代理是工作的，恭喜你<br>截至目前，你可以做到在命令下来代理网络了，可以应对很多的使用场景了，但是依然有场景你无法满足，例如，在某个应用的内需要走代理，前提是你无法添加proxychains4的前缀，如docker daemon里面去下载image，这时候需要一个‘全局’的代理，使到全部的流量都走代理，不管是inbound或者outbound，你会问可以做到吗？<br>答案是Yes，很简单，只需要一个命令去打开bash并在这个bash下面所有的流量都走代理</p>
 <blockquote>
