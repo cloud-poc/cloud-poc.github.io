@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.2.0',
+    sidebar: {"position":"right","width":320,"display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":true,"style":null},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    }
+  };
+</script>
+
+
+
+  <meta name="description" content="Install vault Prepare docker-compose.yml,  content as below (just a sample here, please don’t use it for production, there are more aspects should be considered)">
+<meta name="keywords" content="Harshicorp,Docker,Microservices">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Harshicorp vault setup &amp; Config">
+<meta property="og:url" content="https://cloud-poc.github.io/2019/07/14/Harshicorp-vault-setup-Config/index/index.html">
+<meta property="og:site_name" content="Jamie&#39;s Blog">
+<meta property="og:description" content="Install vault Prepare docker-compose.yml,  content as below (just a sample here, please don’t use it for production, there are more aspects should be considered)">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https://cloud-poc.github.io/2019/07/14/Harshicorp-vault-setup-Config/index/15532408-351f3fa54f1ebc1a.png">
+<meta property="og:image" content="https://cloud-poc.github.io/2019/07/14/Harshicorp-vault-setup-Config/index/15532408-698c9ee3afd1d4f9.png">
+<meta property="og:updated_time" content="2019-07-14T07:06:06.231Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Harshicorp vault setup &amp; Config">
+<meta name="twitter:description" content="Install vault Prepare docker-compose.yml,  content as below (just a sample here, please don’t use it for production, there are more aspects should be considered)">
+<meta name="twitter:image" content="https://cloud-poc.github.io/2019/07/14/Harshicorp-vault-setup-Config/index/15532408-351f3fa54f1ebc1a.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://cloud-poc.github.io/2019/07/14/Harshicorp-vault-setup-Config/index/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Harshicorp vault setup & Config | Jamie's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Jamie's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">技术之路最公平也最残酷，没有捷径，需要日积月累，以及对技术永恒的热爱</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags<span class="badge">9</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories<span class="badge">2</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives<span class="badge">3</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>Search</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="Searching..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+
+  
+
+  <a href="https://github.com/akjamie" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://cloud-poc.github.io/2019/07/14/Harshicorp-vault-setup-Config/index/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jamie Zhang">
+      <meta itemprop="description" content="Jamie，Senior Software Engineer, Open source enthusiasts, PMP,Scrum master">
+      <meta itemprop="image" content="/images/20190713213835-3.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jamie's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Harshicorp vault setup & Config
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-07-14 09:08:03 / Modified: 15:06:06" itemprop="dateCreated datePublished" datetime="2019-07-14T09:08:03+08:00">2019-07-14</time>
+            </span>
+          
+
+          
+            
+
+            
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Microservices/" itemprop="url" rel="index"><span itemprop="name">Microservices</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="Install-vault"><a href="#Install-vault" class="headerlink" title="Install vault"></a>Install vault</h2><ul>
+<li>Prepare <em>docker-compose.yml</em>,  content as below (just a sample here, please don’t use it for production, there are more aspects should be considered)<a id="more"></a>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">version:</span> <span class="string">'3'</span></span><br><span class="line"><span class="symbol">services:</span></span><br><span class="line"><span class="symbol">    consul:</span></span><br><span class="line"><span class="symbol">        container_name:</span> consul.server</span><br><span class="line"><span class="symbol">        command:</span> agent -server -bind <span class="number">0.0</span><span class="number">.0</span><span class="number">.0</span> -client <span class="number">0.0</span><span class="number">.0</span><span class="number">.0</span> -bootstrap-expect=<span class="number">1</span></span><br><span class="line"><span class="symbol">        image:</span> consul:latest</span><br><span class="line"><span class="symbol">        restart:</span> always</span><br><span class="line"><span class="symbol">        volumes:</span></span><br><span class="line">          - ./consul.server/config:<span class="meta-keyword">/consul/</span>config</span><br><span class="line">          - ./consul.server/data:<span class="meta-keyword">/consul/</span>data</span><br><span class="line"><span class="symbol">        ports:</span></span><br><span class="line">          - <span class="string">"9300:9300"</span></span><br><span class="line">          - <span class="string">"9500:9500"</span></span><br><span class="line">          - <span class="string">"9600:9600/udp"</span></span><br><span class="line"><span class="symbol">    vault:</span></span><br><span class="line"><span class="symbol">        container_name:</span> vault.server</span><br><span class="line"><span class="symbol">        image:</span> vault</span><br><span class="line"><span class="symbol">        ports:</span></span><br><span class="line">        - <span class="string">"8200:8200"</span></span><br><span class="line"><span class="symbol">        restart:</span> always</span><br><span class="line"><span class="symbol">        links:</span></span><br><span class="line">            - consul:consul.server</span><br><span class="line"><span class="symbol">        volumes:</span></span><br><span class="line">        - ./vault.server/config:<span class="meta-keyword">/mnt/</span>vault/config</span><br><span class="line">        - ./vault.server/data:<span class="meta-keyword">/mnt/</span>vault/data</span><br><span class="line">        - ./vault.server/logs:<span class="meta-keyword">/mnt/</span>vault/logs</span><br><span class="line">        - ./vault.server/config:<span class="meta-keyword">/vault/</span>config</span><br><span class="line">        - <span class="meta-keyword">/etc/</span>letsencrypt:<span class="meta-keyword">/etc/</span>letsencrypt</span><br><span class="line"><span class="symbol">        cap_add:</span></span><br><span class="line">        - IPC_LOCK</span><br><span class="line"><span class="symbol">        command:</span> server</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ul>
+<li><p><em>consul config - config.json</em></p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"datacenter"</span>: <span class="string">"data-center-1"</span>,</span><br><span class="line">  <span class="attr">"node_name"</span>: <span class="string">"master-node"</span>,</span><br><span class="line">  <span class="attr">"log_level"</span>: <span class="string">"INFO"</span>,</span><br><span class="line">  <span class="attr">"server"</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="attr">"data_dir"</span>: <span class="string">"/consul/data"</span>,</span><br><span class="line">  <span class="attr">"ui"</span> : <span class="literal">true</span>,</span><br><span class="line">  <span class="attr">"ports"</span>: &#123;</span><br><span class="line">    <span class="attr">"http"</span>: <span class="number">8500</span>,</span><br><span class="line">    <span class="attr">"server"</span>: <span class="number">8300</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><em>vault config - vault.hcl</em></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">backend &quot;consul&quot; &#123;</span><br><span class="line">        address = &quot;consul:8500&quot;</span><br><span class="line">        advertise_addr = &quot;http://consul:8300&quot;</span><br><span class="line">        scheme = &quot;http&quot;</span><br><span class="line">&#125;</span><br><span class="line">listener &quot;tcp&quot; &#123;</span><br><span class="line">    address = &quot;0.0.0.0:8200</span><br><span class="line">    tls_disable = 1</span><br><span class="line">&#125;</span><br><span class="line">disable_mlock = true</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Use docker-compose up -d to run these services, and check its status<br><img src="//cloud-poc.github.io/2019/07/14/Harshicorp-vault-setup-Config/index/15532408-351f3fa54f1ebc1a.png" alt><br><img src="//cloud-poc.github.io/2019/07/14/Harshicorp-vault-setup-Config/index/15532408-698c9ee3afd1d4f9.png" alt></p>
+<h2 id="Configure-the-vault"><a href="#Configure-the-vault" class="headerlink" title="Configure the vault"></a>Configure the vault</h2><p>in #1, we created the vault container, but vault is still in uninitialized status (unsealed)</p>
+</li>
+<li><p>Vault init</p>
+</li>
+</ul>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">curl -X PUT \</span><br><span class="line">  https:<span class="regexp">//</span>demo.xxx.com<span class="regexp">/vault/</span>v1<span class="regexp">/sys/i</span>nit \</span><br><span class="line">  -H <span class="string">'Cache-Control: no-cache'</span> \</span><br><span class="line">  -H <span class="string">'Content-Type: application/json'</span> \</span><br><span class="line">  -H <span class="string">'Postman-Token: cb5d640a-152e-844f-cda3-5e8be4e3eec3'</span> \</span><br><span class="line">  -d <span class="string">'&#123;"secret_shares":5, "secret_threshold":2&#125;'</span></span><br><span class="line">  </span><br><span class="line">  &#123;</span><br><span class="line">    <span class="string">"keys"</span>: [</span><br><span class="line">        <span class="string">"977595193b3a8cb4ae70338859f0a7264b2757775a51cca461731b1bff4b61798f"</span>,</span><br><span class="line">        <span class="string">"9f6c61623da515b36671ca2677f5be084f670751e2da6a05d88970ebe832d6430b"</span>,</span><br><span class="line">        <span class="string">"d1f13304840d0445e23ebe7ea39d23dc6821ddcb9fc97ce5ea2c8a9e82ca132ca0"</span>,</span><br><span class="line">        <span class="string">"d49bda98c1723e659f5bb87af7774988e709ff9ad4337dc4c4851cf8a89c7dfd7f"</span>,</span><br><span class="line">        <span class="string">"dfa480970d31b18b7c7943211cdd76636f51b17a55ee2d7a6718052a50d7198847"</span></span><br><span class="line">    ],</span><br><span class="line">    <span class="string">"keys_base64"</span>: [</span><br><span class="line">        <span class="string">"l3WVGTs6jLSucDOIWfCnJksnV3daUcykYXMbG/9LYXmP"</span>,</span><br><span class="line">        <span class="string">"n2xhYj2lFbNmccomd/W+CE9nB1Hi2moF2Ilw6+gy1kML"</span>,</span><br><span class="line">        <span class="string">"0fEzBIQNBEXiPr5+o50j3Ggh3cufyXzl6iyKnoLKEyyg"</span>,</span><br><span class="line">        <span class="string">"1JvamMFyPmWfW7h693dJiOcJ/5rUM33ExIUc+Kicff1/"</span>,</span><br><span class="line">        <span class="string">"36SAlw0xsYt8eUMhHN12Y29RsXpV7i16ZxgFKlDXGYhH"</span></span><br><span class="line">    ],</span><br><span class="line">    <span class="string">"root_token"</span>: <span class="string">"s.nBXC2nmVs7IVLHk6zsU7ZoaT"</span></span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>Vault unseal</p>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">curl -X PUT \</span><br><span class="line">  https://demo.xxx.com/vault/v1/sys/unseal \</span><br><span class="line">  -H <span class="symbol">'Cache</span>-Control: no-cache' \</span><br><span class="line">  -H <span class="symbol">'Content</span>-<span class="keyword">Type</span>: application/json' \</span><br><span class="line">  -H <span class="symbol">'Postman</span>-Token: a43db86c-<span class="number">26</span>d4-de01-<span class="number">9</span>a13-eefc23857eb7' \</span><br><span class="line">  -d '&#123;<span class="string">"key"</span>: <span class="string">"n2xhYj2lFbNmccomd/W+CE9nB1Hi2moF2Ilw6+gy1kML"</span>&#125;'</span><br><span class="line">  </span><br><span class="line">  &#123;</span><br><span class="line">    <span class="string">"type"</span>: <span class="string">"shamir"</span>,</span><br><span class="line">    <span class="string">"initialized"</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="string">"sealed"</span>: <span class="literal">false</span>,</span><br><span class="line">    <span class="string">"t"</span>: <span class="number">2</span>,</span><br><span class="line">    <span class="string">"n"</span>: <span class="number">5</span>,</span><br><span class="line">    <span class="string">"progress"</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="string">"nonce"</span>: <span class="string">""</span>,</span><br><span class="line">    <span class="string">"version"</span>: <span class="string">"1.1.0"</span>,</span><br><span class="line">    <span class="string">"migration"</span>: <span class="literal">false</span>,</span><br><span class="line">    <span class="string">"cluster_name"</span>: <span class="string">"vault-cluster-8492c510"</span>,</span><br><span class="line">    <span class="string">"cluster_id"</span>: <span class="string">"c73cee19-c9ab-81f1-9563-8fd060084370"</span>,</span><br><span class="line">    <span class="string">"recovery_seal"</span>: <span class="literal">false</span></span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>create read/write token<br>a. create admin policy</p>
+<figure class="highlight tex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">curl -X POST <span class="tag">\</span></span><br><span class="line">  https://demo.xxx.com/vault/v1/sys/policy/admin-policy <span class="tag">\</span></span><br><span class="line">  -H 'Cache-Control: no-cache' <span class="tag">\</span></span><br><span class="line">  -H 'Content-Type: application/json' <span class="tag">\</span></span><br><span class="line">  -H 'Postman-Token: c03aae97-d6c1-fa79-f8d5-f4476fe8347a' <span class="tag">\</span></span><br><span class="line">  -H 'X-Vault-Token: s.nBXC2nmVs7IVLHk6zsU7ZoaT' <span class="tag">\</span></span><br><span class="line">  -d '&#123;"policy":"&#123;<span class="tag">\<span class="name">"</span></span>path<span class="tag">\<span class="name">"</span></span>:&#123;<span class="tag">\<span class="name">"</span></span>secret/*<span class="tag">\<span class="name">"</span></span>:&#123;<span class="tag">\<span class="name">"</span></span>capabilities<span class="tag">\<span class="name">"</span></span>:[<span class="tag">\<span class="name">"</span></span>create<span class="tag">\<span class="name">"</span></span>, <span class="tag">\<span class="name">"</span></span>read<span class="tag">\<span class="name">"</span></span>, <span class="tag">\<span class="name">"</span></span>update<span class="tag">\<span class="name">"</span></span>, <span class="tag">\<span class="name">"</span></span>delete<span class="tag">\<span class="name">"</span></span>, <span class="tag">\<span class="name">"</span></span>list<span class="tag">\<span class="name">"</span></span>]&#125;&#125;&#125;"&#125;'</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>b.create user policy<br>similar request as step <label style="color:red">create admin-policy</label><br>c.check the policy we created</p>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">curl -X GET \</span><br><span class="line">  https:<span class="comment">//demo.xxx.com/vault/v1/sys/policy/admin-policy \</span></span><br><span class="line">  -H 'Accept: application/json' \</span><br><span class="line">  -H 'Cache-Control: no-cache' \</span><br><span class="line">  -H 'Postman-Token: <span class="number">6874</span>a6ca-070c-8d20-f4bb-183e1ff663d1' \</span><br><span class="line">  -H 'X-Vault-Token: s.nBXC2nmVs7IVLHk6zsU7ZoaT'</span><br><span class="line">  </span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">"name"</span>: <span class="string">"admin-policy"</span>,</span><br><span class="line">    <span class="string">"rules"</span>: <span class="string">"&#123;\"</span>path\<span class="string">":&#123;\"</span>secrets/*\<span class="string">":&#123;\"</span>capabilities\<span class="string">":[\"</span>create\<span class="string">", \"</span>read\<span class="string">", \"</span>update\<span class="string">", \"</span>delete\<span class="string">", \"</span>list\<span class="string">"]&#125;&#125;&#125;"</span>,</span><br><span class="line">    <span class="string">"request_id"</span>: <span class="string">"51ba3350-f14d-0e3f-27b4-610b6442d296"</span>,</span><br><span class="line">    <span class="string">"lease_id"</span>: <span class="string">""</span>,</span><br><span class="line">    <span class="string">"renewable"</span>: false,</span><br><span class="line">    <span class="string">"lease_duration"</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="string">"data"</span>: &#123;</span><br><span class="line">        <span class="string">"name"</span>: <span class="string">"admin-policy"</span>,</span><br><span class="line">        <span class="string">"rules"</span>: <span class="string">"&#123;\"</span>path\<span class="string">":&#123;\"</span>secret/*\<span class="string">":&#123;\"</span>capabilities\<span class="string">":[\"</span>create\<span class="string">", \"</span>read\<span class="string">", \"</span>update\<span class="string">", \"</span>delete\<span class="string">", \"</span>list\<span class="string">"]&#125;&#125;&#125;"</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="string">"wrap_info"</span>: <span class="literal">null</span>,</span><br><span class="line">    <span class="string">"warnings"</span>: <span class="literal">null</span>,</span><br><span class="line">    <span class="string">"auth"</span>: <span class="literal">null</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>Create Token for above two newly created policies</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line">curl -<span class="type">X</span> <span class="type">POST</span> \</span><br><span class="line">  https:<span class="comment">//demo.xxx.com/vault/v1/auth/token/create \</span></span><br><span class="line">  -<span class="type">H</span> <span class="symbol">'Cache</span>-<span class="type">Control</span>: no-cache' \</span><br><span class="line">  -<span class="type">H</span> <span class="symbol">'Content</span>-<span class="type">Type</span>: application/json' \</span><br><span class="line">  -<span class="type">H</span> <span class="symbol">'Postman</span>-<span class="type">Token</span>: <span class="number">21</span>ef1963-b06d-b4ea<span class="number">-547</span>c<span class="number">-03539</span>a681ca5' \</span><br><span class="line">  -<span class="type">H</span> <span class="symbol">'X</span>-<span class="type">Vault</span>-<span class="type">Token</span>: s.nBXC2nmVs7IVLHk6zsU7ZoaT' \</span><br><span class="line">  -d '&#123;<span class="string">"policies"</span>: [<span class="string">"admin-policy"</span>]&#125;'</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">"request_id"</span>: <span class="string">"a5251b70-e14c-5c56-a81e-6ad59445a44f"</span>,</span><br><span class="line">    <span class="string">"lease_id"</span>: <span class="string">""</span>,</span><br><span class="line">    <span class="string">"renewable"</span>: <span class="literal">false</span>,</span><br><span class="line">    <span class="string">"lease_duration"</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="string">"data"</span>: <span class="literal">null</span>,</span><br><span class="line">    <span class="string">"wrap_info"</span>: <span class="literal">null</span>,</span><br><span class="line">    <span class="string">"warnings"</span>: <span class="literal">null</span>,</span><br><span class="line">    <span class="string">"auth"</span>: &#123;</span><br><span class="line">        <span class="string">"client_token"</span>: <span class="string">"s.AXTHvuudLS6C4PYjSvLLabr9"</span>,</span><br><span class="line">        <span class="string">"accessor"</span>: <span class="string">"wVg70OelyhDMwa4MojtCKeZ1"</span>,</span><br><span class="line">        <span class="string">"policies"</span>: [</span><br><span class="line">            <span class="string">"admin-policy"</span>,</span><br><span class="line">            <span class="string">"default"</span></span><br><span class="line">        ],</span><br><span class="line">        <span class="string">"token_policies"</span>: [</span><br><span class="line">            <span class="string">"admin-policy"</span>,</span><br><span class="line">            <span class="string">"default"</span></span><br><span class="line">        ],</span><br><span class="line">        <span class="string">"metadata"</span>: <span class="literal">null</span>,</span><br><span class="line">        <span class="string">"lease_duration"</span>: <span class="number">2764800</span>,</span><br><span class="line">        <span class="string">"renewable"</span>: <span class="literal">true</span>,</span><br><span class="line">        <span class="string">"entity_id"</span>: <span class="string">""</span>,</span><br><span class="line">        <span class="string">"token_type"</span>: <span class="string">"service"</span>,</span><br><span class="line">        <span class="string">"orphan"</span>: <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">"request_id"</span>: <span class="string">"35212529-0b4c-3c50-0489-94df50a5f781"</span>,</span><br><span class="line">    <span class="string">"lease_id"</span>: <span class="string">""</span>,</span><br><span class="line">    <span class="string">"renewable"</span>: <span class="literal">false</span>,</span><br><span class="line">    <span class="string">"lease_duration"</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="string">"data"</span>: <span class="literal">null</span>,</span><br><span class="line">    <span class="string">"wrap_info"</span>: <span class="literal">null</span>,</span><br><span class="line">    <span class="string">"warnings"</span>: <span class="literal">null</span>,</span><br><span class="line">    <span class="string">"auth"</span>: &#123;</span><br><span class="line">        <span class="string">"client_token"</span>: <span class="string">"s.7A1UuLB7aJdiGhn5Qaj2FlxN"</span>,</span><br><span class="line">        <span class="string">"accessor"</span>: <span class="string">"8H2pMpG4SnKHMgH8nr56FsUJ"</span>,</span><br><span class="line">        <span class="string">"policies"</span>: [</span><br><span class="line">            <span class="string">"default"</span>,</span><br><span class="line">            <span class="string">"user-policy"</span></span><br><span class="line">        ],</span><br><span class="line">        <span class="string">"token_policies"</span>: [</span><br><span class="line">            <span class="string">"default"</span>,</span><br><span class="line">            <span class="string">"user-policy"</span></span><br><span class="line">        ],</span><br><span class="line">        <span class="string">"metadata"</span>: <span class="literal">null</span>,</span><br><span class="line">        <span class="string">"lease_duration"</span>: <span class="number">2764800</span>,</span><br><span class="line">        <span class="string">"renewable"</span>: <span class="literal">true</span>,</span><br><span class="line">        <span class="string">"entity_id"</span>: <span class="string">""</span>,</span><br><span class="line">        <span class="string">"token_type"</span>: <span class="string">"service"</span>,</span><br><span class="line">        <span class="string">"orphan"</span>: <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Try to use above token to read/write data<br>$\color{red}{Admin-token}$ to put key/value, otherwise got <label style="color:red">error occurred:permission denied</label></p>
+<figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">    curl <span class="params">-X</span> POST \</span><br><span class="line">      https:<span class="comment">//demo.xxx.com/vault/v1/secret/test \</span></span><br><span class="line">      <span class="params">-H</span> <span class="string">'Cache-Control: no-cache'</span> \</span><br><span class="line">      <span class="params">-H</span> <span class="string">'Content-Type: application/json'</span> \</span><br><span class="line">      <span class="params">-H</span> <span class="string">'Postman-Token: 0b3cd187-14fd-c94f-9198-794e71b906af'</span> \</span><br><span class="line">      <span class="params">-H</span> <span class="string">'X-Vault-Token: s.AXTHvuudLS6C4PYjSvLLabr9'</span> \ </span><br><span class="line">     </span><br><span class="line">      <span class="params">-d</span> <span class="string">'&#123;</span></span><br><span class="line"><span class="string">    	"token":"test-token"</span></span><br><span class="line"><span class="string">    &#125;'</span></span><br><span class="line">&lt;label style=<span class="string">"color:red"</span>&gt;user<span class="params">-token</span>&lt;/label&gt; <span class="keyword">to</span> get key/value</span><br><span class="line"></span><br><span class="line">    curl <span class="params">-X</span> GET \</span><br><span class="line">      https:<span class="comment">//demo.xxx.com/vault/v1/secret/test \</span></span><br><span class="line">      <span class="params">-H</span> <span class="string">'Cache-Control: no-cache'</span> \</span><br><span class="line">      <span class="params">-H</span> <span class="string">'Content-Type: application/json'</span> \</span><br><span class="line">      <span class="params">-H</span> <span class="string">'Postman-Token: 2f1e1e02-db11-5fdc-426e-ad0adc735b47'</span> \</span><br><span class="line">      <span class="params">-H</span> <span class="string">'X-Vault-Token: s.7A1UuLB7aJdiGhn5Qaj2FlxN'</span> </span><br><span class="line">    </span><br><span class="line">    &#123;</span><br><span class="line">        <span class="string">"request_id"</span>: <span class="string">"8a1dfacd-7514-ae7d-8133-d3295fafb394"</span>,</span><br><span class="line">        <span class="string">"lease_id"</span>: <span class="string">""</span>,</span><br><span class="line">        <span class="string">"renewable"</span>: <span class="literal">false</span>,</span><br><span class="line">        <span class="string">"lease_duration"</span>: <span class="number">2764800</span>,</span><br><span class="line">        <span class="string">"data"</span>: &#123;</span><br><span class="line">            <span class="string">"token"</span>: <span class="string">"test-token"</span></span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="string">"wrap_info"</span>: <span class="built_in">null</span>,</span><br><span class="line">        <span class="string">"warnings"</span>: <span class="built_in">null</span>,</span><br><span class="line">        <span class="string">"auth"</span>: <span class="built_in">null</span></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>#####Q1: no handler for route ‘secret/test’<br>check secrets engine if corresponding is enabled or not, commands:<br>a. docker exec -it <container-name> /bin/sh<br>b.set VAULT_ADDR=<a href="http://127.0.0.1:8200" target="_blank" rel="noopener">http://127.0.0.1:8200</a>, and VAULT_TOKEN={root token}<br>c. vault secrets list, to list out all secrets, by default,  kv secrets engine at: secret/ should be enabled, if not found, please move forward to #d<br>d. vault secrets enable -path=secret kv<br>e. test the secrets engine, vault kv put secret/hello foo=world excited=yes<br>f. vault kv get secret/hello, to check the data u’ve just pushed</container-name></p>
+</li>
+</ul>
+<h2 id="Springboot-application-intergrates-with-Vault"><a href="#Springboot-application-intergrates-with-Vault" class="headerlink" title="Springboot application intergrates with Vault"></a>Springboot application intergrates with Vault</h2><ul>
+<li><p>create project - <em>vault-test</em>, and import related maven dependencies</p>
+<figure class="highlight dust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">properties</span>&gt;</span></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">project.build.sourceEncoding</span>&gt;</span>UTF-8<span class="tag">&lt;/<span class="name">project.build.sourceEncoding</span>&gt;</span></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">project.build.sourceEncoding</span>&gt;</span>UTF-8<span class="tag">&lt;/<span class="name">project.build.sourceEncoding</span>&gt;</span></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">spring.cloud.version</span>&gt;</span>Greenwich.RELEASE<span class="tag">&lt;/<span class="name">spring.cloud.version</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span></span><br><span class="line"><span class="xml"></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">parent</span>&gt;</span></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-parent<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.1.3.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;/<span class="name">parent</span>&gt;</span></span></span><br><span class="line"><span class="xml"></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">dependencyManagement</span>&gt;</span></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span></span><br><span class="line"><span class="xml">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span></span><br><span class="line"><span class="xml">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-dependencies<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span></span><br><span class="line"><span class="xml">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>$</span><span class="template-variable">&#123;spring.cloud.version&#125;</span><span class="xml"><span class="tag">&lt;/<span class="name">version</span>&gt;</span></span></span><br><span class="line"><span class="xml">            <span class="tag">&lt;<span class="name">type</span>&gt;</span>pom<span class="tag">&lt;/<span class="name">type</span>&gt;</span></span></span><br><span class="line"><span class="xml">            <span class="tag">&lt;<span class="name">scope</span>&gt;</span>import<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;/<span class="name">dependencyManagement</span>&gt;</span></span></span><br><span class="line"><span class="xml"></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-actuator<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span></span><br><span class="line"><span class="xml"></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span></span><br><span class="line"><span class="xml"></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-vault-config<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span></span><br><span class="line"><span class="xml"></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-vault-config-databases<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span></span><br><span class="line"><span class="xml"></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-test<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">scope</span>&gt;</span>test<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">exclusions</span>&gt;</span></span></span><br><span class="line"><span class="xml">            <span class="tag">&lt;<span class="name">exclusion</span>&gt;</span></span></span><br><span class="line"><span class="xml">                <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>junit<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span></span><br><span class="line"><span class="xml">                <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>junit<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span></span><br><span class="line"><span class="xml">            <span class="tag">&lt;/<span class="name">exclusion</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;/<span class="name">exclusions</span>&gt;</span></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span></span><br><span class="line"><span class="xml"></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.junit.jupiter<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>junit-jupiter-api<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">scope</span>&gt;</span>test<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span></span><br><span class="line"><span class="xml"></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.junit.jupiter<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>junit-jupiter-engine<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span></span><br><span class="line"><span class="xml"></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-devtools<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">optional</span>&gt;</span>true<span class="tag">&lt;/<span class="name">optional</span>&gt;</span></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span></span><br><span class="line"><span class="xml"></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-configuration-processor<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">optional</span>&gt;</span>true<span class="tag">&lt;/<span class="name">optional</span>&gt;</span></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span></span><br><span class="line"><span class="xml"></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Prepare test data</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">curl -X POST \</span><br><span class="line">  https://demo.xxx.com/v1/secret/vault-test \</span><br><span class="line">  -H '<span class="keyword">Cache</span>-Control: <span class="keyword">no</span>-<span class="keyword">cache</span><span class="string">' \</span></span><br><span class="line"><span class="string">  -H '</span><span class="keyword">Content</span>-<span class="keyword">Type</span>: application/<span class="keyword">json</span><span class="string">' \</span></span><br><span class="line"><span class="string">  -H '</span>Postman-Token: <span class="number">6</span>cad13c9<span class="number">-14</span>d3<span class="number">-8260</span>-dd74<span class="number">-6</span>cef2b2ee822<span class="string">' \</span></span><br><span class="line"><span class="string">  -H '</span>X-Vault-Token: s.AXTHvuudLS6C4PYjSvLLabr9<span class="string">' \</span></span><br><span class="line"><span class="string">  -d '</span>&#123;</span><br><span class="line">	<span class="string">"username"</span>:<span class="string">"Jamie"</span>,</span><br><span class="line">	<span class="string">"password"</span>:<span class="string">"Hlhjjj&amp;jkjlkjklhHHJKKYUJKjTFttrdfhHg#h$$HHHH"</span></span><br><span class="line">&#125;<span class="string">'</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Configure Spring Vault in src/main/resources/bootstrap.yml</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">server</span>:</span><br><span class="line">  <span class="attribute">port</span>: <span class="number">8084</span></span><br><span class="line"></span><br><span class="line">logging.level.org.springframework.<span class="attribute">vault</span>: DEBUG</span><br><span class="line"></span><br><span class="line"><span class="attribute">spring</span>:</span><br><span class="line">  <span class="attribute">application</span>:</span><br><span class="line">    <span class="attribute">name</span>: vault-test</span><br><span class="line">spring.<span class="attribute">cloud</span>:</span><br><span class="line">    <span class="attribute">vault</span>:</span><br><span class="line">      <span class="attribute">host</span>: demo.xxx.com</span><br><span class="line">      <span class="attribute">port</span>: <span class="number">443</span></span><br><span class="line">      <span class="attribute">scheme</span>: https</span><br><span class="line">      <span class="attribute">authentication</span>: TOKEN</span><br><span class="line">      <span class="attribute">config</span>:</span><br><span class="line">          <span class="attribute">order</span>: -<span class="number">10</span></span><br><span class="line">      <span class="attribute">kv</span>:</span><br><span class="line">        <span class="attribute">application-name</span>: vault-test</span><br><span class="line">        <span class="attribute">default-context</span>: vault-test</span><br><span class="line">        <span class="attribute">backend</span>: secret</span><br><span class="line">        <span class="attribute">enabled</span>: true</span><br><span class="line">        <span class="attribute">profile-separator</span>: /</span><br><span class="line">      <span class="attribute">token</span>: s.<span class="number">7</span>A1UuLB7aJdiGhn5Qaj2FlxN</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Impl a controller to inject the data loaded from vault</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line">public <span class="class"><span class="keyword">class</span> <span class="title">TestController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Value</span>(<span class="string">"<span class="subst">$&#123;username:test&#125;</span>"</span>)</span><br><span class="line">	private <span class="built_in">String</span> userName;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Value</span>(<span class="string">"<span class="subst">$&#123;password:test&#125;</span>"</span>)</span><br><span class="line">	private <span class="built_in">String</span> password;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@GetMapping</span>(<span class="string">"/"</span>)</span><br><span class="line">	<span class="meta">@ResponseBody</span></span><br><span class="line">	public <span class="built_in">Map</span>&lt;<span class="built_in">String</span>, <span class="built_in">String</span>&gt; test() &#123;</span><br><span class="line">		<span class="built_in">Map</span>&lt;<span class="built_in">String</span>, <span class="built_in">String</span>&gt; rsp = <span class="keyword">new</span> HashMap&lt;<span class="built_in">String</span>, <span class="built_in">String</span>&gt;();</span><br><span class="line">		rsp.put(<span class="string">"userName"</span>, userName);</span><br><span class="line">		rsp.put(<span class="string">"password"</span>, password);    </span><br><span class="line">		<span class="keyword">return</span> rsp;</span><br><span class="line">	&#125;    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<blockquote>
+<p>Findings found during testing:<br><em>if change the spring.cloud.vault.config.order to a lower value, for example -100, the configs loaded from vault can take effects on spring auto-configured beans, like HikaiCP datasource, can put credentials onto vault in k/v format rather than keep these sensitive data in explicit config file, spring.datasource.username=xxx,spring.datasource.password=xxx</em></p>
+</blockquote>
+<ul>
+<li>Test it<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">curl -X GET \</span><br><span class="line">  http:<span class="comment">//localhost:8084/ \</span></span><br><span class="line">  -H 'Cache-Control: no-cache' \</span><br><span class="line">  -H 'Postman-Token: <span class="number">9466</span>ffbc-e8d5-355f-cb2c-c<span class="number">2990</span>7a5af9d'</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">"password"</span>: <span class="string">"Hlhjjj&amp;jkjlkjklhHHJKKYUJKjTFttrdfhHg#h$$HHHH"</span>,</span><br><span class="line">    <span class="string">"userName"</span>: <span class="string">"Jamie"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>you can find sources code on <a href="https://github.com/cloud-poc/springboot-vault-test" target="_blank" rel="noopener">github</a></p>
+<p>Referenced posts:<br><a href="https://www.vaultproject.io/docs/concepts/policies.html" target="_blank" rel="noopener">https://www.vaultproject.io/docs/concepts/policies.html</a><br><a href="https://www.hashicorp.com/resources/getting-vault-enterprise-installed-running" target="_blank" rel="noopener">https://www.hashicorp.com/resources/getting-vault-enterprise-installed-running</a><br><a href="https://learn.hashicorp.com/vault/secrets-management/sm-pki-engine" target="_blank" rel="noopener">https://learn.hashicorp.com/vault/secrets-management/sm-pki-engine</a><br><a href="https://www.jianshu.com/p/267f2d9ae87e" target="_blank" rel="noopener">https://www.jianshu.com/p/267f2d9ae87e</a><br><a href="https://blog.51cto.com/7308310/2338146?source=dra" target="_blank" rel="noopener">https://blog.51cto.com/7308310/2338146?source=dra</a></p>
+
+      
+    </div>
+
+    
+
+    
+      
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Jamie Zhang</li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    
+    <a href="https://cloud-poc.github.io/2019/07/14/Harshicorp-vault-setup-Config/index/" title="Harshicorp vault setup & Config">https://cloud-poc.github.io/2019/07/14/Harshicorp-vault-setup-Config/index/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/Harshicorp/" rel="tag"><i class="fa fa-tag"></i> Harshicorp</a>
+          
+            <a href="/tags/Docker/" rel="tag"><i class="fa fa-tag"></i> Docker</a>
+          
+            <a href="/tags/Microservices/" rel="tag"><i class="fa fa-tag"></i> Microservices</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/07/14/Linux-network-proxy-setup-desktop-and-terminal/index/" rel="prev" title="Linux network proxy setup for desktop and terminal">
+                Linux network proxy setup for desktop and terminal <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/20190713213835-3.jpg" alt="Jamie Zhang">
+            
+              <p class="site-author-name" itemprop="name">Jamie Zhang</p>
+              <div class="site-description motion-element" itemprop="description">Jamie，Senior Software Engineer, Open source enthusiasts, PMP,Scrum master</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">2</span>
+                    <span class="site-state-item-name">categories</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">9</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/akjamie" title="GitHub &rarr; https://github.com/akjamie" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:akjamie.zhang@outlook.com" title="E-Mail &rarr; mailto:akjamie.zhang@outlook.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            </div>
+          
+
+          
+             <div class="cc-license motion-element" itemprop="license">
+              
+              
+                
+              
+              
+              
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+             </div>
+          
+
+          
+          
+
+          
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Install-vault"><span class="nav-number">1.</span> <span class="nav-text">Install vault</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Configure-the-vault"><span class="nav-number">2.</span> <span class="nav-text">Configure the vault</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Springboot-application-intergrates-with-Vault"><span class="nav-number">3.</span> <span class="nav-text">Springboot application intergrates with Vault</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jamie Zhang</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+  
+    
+    
+  
+  <script color="0,0,255" opacity="0.5" zindex="-1" count="99" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+
+  
+  
+  
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.2.0"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.2.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>
