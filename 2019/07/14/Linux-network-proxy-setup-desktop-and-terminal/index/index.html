@@ -104,7 +104,8 @@
 <meta property="og:description" content="背景介绍很多时候我们由于great firewall，我们无法访问某些网站，这时候就需要用到网络代理来应对一些比较urgent的case，本文主要会介绍如何使用Shadowsocks 和 Proxychain来 setup linux network proxy，这样在命令行下都可以起到代理和转发的作用，而不仅限于浏览器的代理。 SS server &amp;amp; SS local的配置预置条件 In">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="https://cloud-poc.github.io/2019/07/14/Linux-network-proxy-setup-desktop-and-terminal/index/15532408-1405d25f0bcee21b.png">
-<meta property="og:updated_time" content="2019-07-14T07:09:32.255Z">
+<meta property="og:image" content="https://cloud-poc.github.io/2019/07/14/Linux-network-proxy-setup-desktop-and-terminal/index/15532408-1405d25f0bcee21b.png">
+<meta property="og:updated_time" content="2019-07-14T07:16:14.766Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Linux network proxy setup for desktop and terminal">
 <meta name="twitter:description" content="背景介绍很多时候我们由于great firewall，我们无法访问某些网站，这时候就需要用到网络代理来应对一些比较urgent的case，本文主要会介绍如何使用Shadowsocks 和 Proxychain来 setup linux network proxy，这样在命令行下都可以起到代理和转发的作用，而不仅限于浏览器的代理。 SS server &amp;amp; SS local的配置预置条件 In">
@@ -426,7 +427,7 @@
                 
               
 
-              <time title="Created: 2019-07-14 14:50:52 / Modified: 15:09:32" itemprop="dateCreated datePublished" datetime="2019-07-14T14:50:52+08:00">2019-07-14</time>
+              <time title="Created: 2019-07-14 14:50:52 / Modified: 15:16:14" itemprop="dateCreated datePublished" datetime="2019-07-14T14:50:52+08:00">2019-07-14</time>
             </span>
           
 
@@ -500,7 +501,7 @@
 <li>一台可以访问<strong>外网</strong>的云主机，Azure/AWS/Alicloud-HK等都可以<blockquote>
 <p>sudo pip install shadowsocks</p>
 </blockquote>
-<h4 id="SSServer的配置和启动"><a href="#SSServer的配置和启动" class="headerlink" title="SSServer的配置和启动"></a>SSServer的配置和启动</h4>在云主机上创建sss 配置文件shadowsocks.json(推荐放置在/etc/shadowsocks/ 下面)，其内容如下：<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	<span class="attr">"server"</span>:<span class="string">"0.0.0.0"</span>,</span><br><span class="line">	<span class="attr">"server_port"</span>:<span class="string">"&#123;port&#125;"</span>,</span><br><span class="line">	<span class="attr">"local_address"</span>:<span class="string">"127.0.0.1"</span>,</span><br><span class="line">	<span class="attr">"local_port"</span>:<span class="string">"1080"</span>,</span><br><span class="line">	<span class="attr">"password"</span>:<span class="string">"&#123;password&#125;"</span>,</span><br><span class="line">	<span class="attr">"timeout"</span>:<span class="number">1000</span>,</span><br><span class="line">	<span class="attr">"method"</span>:<span class="string">"aes-256-cfb"</span>,</span><br><span class="line">	<span class="attr">"fast_open"</span>:<span class="literal">false</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="SSServer的配置和启动"><a href="#SSServer的配置和启动" class="headerlink" title="SSServer的配置和启动"></a>SSServer的配置和启动</h4>在云主机上创建sss 配置文件shadowsocks.json(推荐放置在/etc/shadowsocks/ 下面)，其内容如下：<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"server"</span>:<span class="string">"0.0.0.0"</span>,</span><br><span class="line">  <span class="attr">"server_port"</span>:<span class="string">"&#123;port&#125;"</span>,</span><br><span class="line">  <span class="attr">"local_address"</span>:<span class="string">"127.0.0.1"</span>,</span><br><span class="line">  <span class="attr">"local_port"</span>:<span class="string">"1080"</span>,</span><br><span class="line">  <span class="attr">"password"</span>:<span class="string">"&#123;password&#125;"</span>,</span><br><span class="line">  <span class="attr">"timeout"</span>:<span class="number">1000</span>,</span><br><span class="line">  <span class="attr">"method"</span>:<span class="string">"aes-256-cfb"</span>,</span><br><span class="line">  <span class="attr">"fast_open"</span>:<span class="literal">false</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 </li>
 </ul>
@@ -521,10 +522,10 @@
 </blockquote>
 <p>接下来我们进行proxychain的安装和配置</p>
 <h3 id="Proxychain的配置"><a href="#Proxychain的配置" class="headerlink" title="Proxychain的配置"></a>Proxychain的配置</h3><h4 id="Install-proxychain"><a href="#Install-proxychain" class="headerlink" title="Install proxychain"></a>Install proxychain</h4><blockquote>
-<p>git clone <a href="https://github.com/rofl0r/proxychains-ng" target="_blank" rel="noopener">https://github.com/rofl0r/proxychains-ng</a><br>    cd proxychains-ng<br>    ./configure –prefix=/usr –sysconfdir=/etc<br>    make<br>    make install<br>    make install-config<br>按步骤执行如上命令完成后，proxychain安装完成，并且默认的配置为：/etc/proxychains.conf</p>
+<p>git clone <a href="https://github.com/rofl0r/proxychains-ng" target="_blank" rel="noopener">https://github.com/rofl0r/proxychains-ng</a><br>  cd proxychains-ng<br>  ./configure –prefix=/usr –sysconfdir=/etc<br>  make<br>  make install<br>  make install-config<br>按步骤执行如上命令完成后，proxychain安装完成，并且默认的配置为：/etc/proxychains.conf</p>
 </blockquote>
 <h4 id="Update-proxychain的代理列表"><a href="#Update-proxychain的代理列表" class="headerlink" title="Update proxychain的代理列表"></a>Update proxychain的代理列表</h4><blockquote>
-<p>vim /etc/proxychains.conf<br>在文件尾部增加一行：socks5    127.0.0.1  1080<br><img src="//cloud-poc.github.io/2019/07/14/Linux-network-proxy-setup-desktop-and-terminal/index/15532408-1405d25f0bcee21b.png" alt></p>
+<p>vim /etc/proxychains.conf<br>在文件尾部增加一行：socks5    127.0.0.1  1080<br><img src="//cloud-poc.github.io/2019/07/14/Linux-network-proxy-setup-desktop-and-terminal/index/15532408-1405d25f0bcee21b.png" height="274" width="118"><br><img src="//cloud-poc.github.io/2019/07/14/Linux-network-proxy-setup-desktop-and-terminal/index/15532408-1405d25f0bcee21b.png" alt></p>
 </blockquote>
 <p>现在你可以测试了，测试命令如下：</p>
 <blockquote>
