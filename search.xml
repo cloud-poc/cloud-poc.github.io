@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title>Spring Cloud (00) - Demo overview</title>
+      <link href="/2019/07/15/Spring-Cloud-Demo-Overview/index/"/>
+      <url>/2019/07/15/Spring-Cloud-Demo-Overview/index/</url>
+      
+        <content type="html"><![CDATA[<h3 id="Demo的介绍"><a href="#Demo的介绍" class="headerlink" title="Demo的介绍"></a>Demo的介绍</h3><p>本文主要通过一个小demo，来综合运用spring cloud系列技术，demo中主要包含如下模块/组建：</p><ol><li>Authorization service, 基于Spring Security Oauth2 + Spring Cloud Oauth2,提供集中授权服务,如Token 生成,校验等  </li><li>API gateway, edge service, 提供统一的对外访问接口，集成了oauth2 安全校验，Netflix Hystrix服务降级，依赖隔离，断路保护功能  </li><li>Service registry,基于Netflix Eureka的注册中心提供服务注册和服务发现功能  </li><li>Config service, 采用了 Spring cloud config + Spring Cloud Bus提供简单的配置中心  </li><li>Catalog service, 示例服务，模拟一个简单的商品服务目录，仅一维结构  </li><li>Inventory service, 示例服务, 模拟简单的商品库存服务</li><li>Hystrix dashboard, 聚合hystrix的metrics监控展示</li></ol><h3 id="整体架构"><a href="#整体架构" class="headerlink" title="整体架构"></a>整体架构</h3><p><img src="//cloud-poc.github.io/2019/07/15/Spring-Cloud-Demo-Overview/index/architecture.png" alt></p><h3 id="Spring-boot-项目列表"><a href="#Spring-boot-项目列表" class="headerlink" title="Spring boot 项目列表"></a>Spring boot 项目列表</h3><ol><li>authorization-service，<a href="https://github.com/cloud-poc/authorization-service" target="_blank" rel="noopener">https://github.com/cloud-poc/authorization-service</a><br>backed by mysql database</li><li>cloud-api-gateway，<a href="https://github.com/cloud-poc/api-gateway" target="_blank" rel="noopener">https://github.com/cloud-poc/api-gateway</a><br>目前主要集成了oauth2 jwt授权认证，无valid token直接reject</li><li>service-registry，<a href="https://github.com/cloud-poc/service-registry" target="_blank" rel="noopener">https://github.com/cloud-poc/service-registry</a><br>eureka 服务端，外置话了部分参数，便于在docker/docker-compose部署时根据需要配置</li><li>config-service，<a href="https://github.com/cloud-poc/config-service" target="_blank" rel="noopener">https://github.com/cloud-poc/config-service</a><br>基于spring cloud config的配置中心，后续会考虑用携程apollo替换</li><li>catalog-service， <a href="https://github.com/cloud-poc/catalog-service" target="_blank" rel="noopener">https://github.com/cloud-poc/catalog-service</a><br>模拟一个简单的商品服务目录，用到了feign和netflix robin等框架</li><li>inventory-service， <a href="https://github.com/cloud-poc/inventory-service" target="_blank" rel="noopener">https://github.com/cloud-poc/inventory-service</a></li><li>hystrix-turbine-dashboard，<a href="https://github.com/cloud-poc/hystrix-turbine-dashboard" target="_blank" rel="noopener">https://github.com/cloud-poc/hystrix-turbine-dashboard</a><br>hystrix的集中dashboard， 目前turbine stream部分还有点问题，能从mq总拿到stream信息，但是dashboard展示有问题</li><li>devops-config-service-repo， <a href="https://github.com/cloud-poc/devops-config-service-repo" target="_blank" rel="noopener">https://github.com/cloud-poc/devops-config-service-repo</a><br>服务configs目录，主要存放cloud configs和docker compose files</li><li>api-common, <a href="https://github.com/cloud-poc/api-common" target="_blank" rel="noopener">https://github.com/cloud-poc/api-common</a><br>部分common代码，如generic exception的定义和controler advice，swagger的配置</li></ol><h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><p>主要项目都提供了docker打包的plugin，直接运行mvn clean compile jib:dockerBuild就能实现local build，如需要推送到远程docker registry，需要配置远端仓库信息。 </p><p>在gateway，catalog，inventory中都配置了调用链跟踪，抽样数据会汇总到zipkin上进行展示，目前是基于http 方式推送数据，后面会修改为rabbit mq方式推送，提高性能 </p><p>在gateway，catalog，inventory中都配置了prometheus的监控埋点，metrics会被拉取到prometheus上，并在kafana中展示，在deveops代码仓库中提供了一个简单的prometheus+alertmanager+kafana的docker compose file</p><p>logging的统一收集和分析还没有开始</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Micrioservice </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Spring Cloud </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Free CA Certs setup using Certbot + Docker + Nginx</title>
       <link href="/2019/07/14/Https-setup-using-Certbot-Docker-Nginx/index/"/>
       <url>/2019/07/14/Https-setup-using-Certbot-Docker-Nginx/index/</url>
