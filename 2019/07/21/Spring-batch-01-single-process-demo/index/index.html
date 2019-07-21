@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.2.0',
+    sidebar: {"position":"right","width":320,"display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":true,"show_result":true,"style":null},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    }
+  };
+</script>
+
+
+
+  <meta name="description" content="Spring batch是轻量级，全面的批处理框架，旨在开发对企业系统日常运营至关重要的强大批处理应用程序。 Spring Batch负责大量记录，包括日志记录/跟踪，事务管理，作业处理统计，作业重启，跳过和资源管理。 它还提供更高级的技术服务和功能，通过优化和分区技术实现极高容量和高性能的批处理作业。 简单和复杂的大批量批处理作业可以高度可扩展的方式利用框架来处理大量信息。 关于spring b">
+<meta name="keywords" content="Spring Batch">
+<meta property="og:type" content="article">
+<meta property="og:title" content="spring batch - single process &amp; remote partitioning(multi instances)">
+<meta property="og:url" content="https://cloud-poc.github.io/2019/07/21/Spring-batch-01-single-process-demo/index/index.html">
+<meta property="og:site_name" content="Jamie&#39;s Blog">
+<meta property="og:description" content="Spring batch是轻量级，全面的批处理框架，旨在开发对企业系统日常运营至关重要的强大批处理应用程序。 Spring Batch负责大量记录，包括日志记录/跟踪，事务管理，作业处理统计，作业重启，跳过和资源管理。 它还提供更高级的技术服务和功能，通过优化和分区技术实现极高容量和高性能的批处理作业。 简单和复杂的大批量批处理作业可以高度可扩展的方式利用框架来处理大量信息。 关于spring b">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https://cloud-poc.github.io/2019/07/21/Spring-batch-01-single-process-demo/index/20190721193530.png">
+<meta property="og:image" content="https://cloud-poc.github.io/2019/07/21/Spring-batch-01-single-process-demo/index/single-process-sequence.png">
+<meta property="og:updated_time" content="2019-07-21T12:52:59.854Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="spring batch - single process &amp; remote partitioning(multi instances)">
+<meta name="twitter:description" content="Spring batch是轻量级，全面的批处理框架，旨在开发对企业系统日常运营至关重要的强大批处理应用程序。 Spring Batch负责大量记录，包括日志记录/跟踪，事务管理，作业处理统计，作业重启，跳过和资源管理。 它还提供更高级的技术服务和功能，通过优化和分区技术实现极高容量和高性能的批处理作业。 简单和复杂的大批量批处理作业可以高度可扩展的方式利用框架来处理大量信息。 关于spring b">
+<meta name="twitter:image" content="https://cloud-poc.github.io/2019/07/21/Spring-batch-01-single-process-demo/index/20190721193530.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://cloud-poc.github.io/2019/07/21/Spring-batch-01-single-process-demo/index/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>spring batch - single process & remote partitioning(multi instances) | Jamie's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Jamie's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">技术之路最公平也最残酷，没有捷径，需要日积月累，以及对技术永恒的热爱</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags<span class="badge">11</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories<span class="badge">3</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives<span class="badge">5</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>Search</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="Searching..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+
+  
+
+  <a href="https://github.com/akjamie" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://cloud-poc.github.io/2019/07/21/Spring-batch-01-single-process-demo/index/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jamie Zhang">
+      <meta itemprop="description" content="Jamie，Senior Software Engineer, Open source enthusiasts, PMP,Scrum master">
+      <meta itemprop="image" content="/images/20190713213835-3.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jamie's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">spring batch - single process & remote partitioning(multi instances)
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-07-21 18:55:24 / Modified: 20:52:59" itemprop="dateCreated datePublished" datetime="2019-07-21T18:55:24+08:00">2019-07-21</time>
+            </span>
+          
+
+          
+            
+
+            
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Microservice/" itemprop="url" rel="index"><span itemprop="name">Microservice</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Spring batch是轻量级，全面的批处理框架，旨在开发对企业系统日常运营至关重要的强大批处理应用程序。</p>
+<p>Spring Batch负责大量记录，包括日志记录/跟踪，事务管理，作业处理统计，作业重启，跳过和资源管理。 它还提供更高级的技术服务和功能，通过优化和分区技术实现极高容量和高性能的批处理作业。 简单和复杂的大批量批处理作业可以高度可扩展的方式利用框架来处理大量信息。</p>
+<p>关于spring batch的细节介绍，请参加<a href="https://spring.io/projects/spring-batch" target="_blank" rel="noopener">Spring batch</a>官网，本文主要是记录一个poc的过程，主要包含单个实例应用和远程分析多实例处理的cases。</p>
+<p>模拟demo的用户场景：<br>定时处理多个系统输出的csv文件，然后跑批处理到数据到DB，简要架构图如下:<br><img src="//cloud-poc.github.io/2019/07/21/Spring-batch-01-single-process-demo/index/20190721193530.png" alt></p>
+<h3 id="单个实例处理-且单个文件"><a href="#单个实例处理-且单个文件" class="headerlink" title="单个实例处理(且单个文件)"></a>单个实例处理(且单个文件)</h3><p>通过cron job定时调度batch job，整个job由两个step组成的一个flow，step1 - 清理目标数据库表(模拟场景，可能是数据备份，建立新的day表等); step2 - 加载文件，解析数据内容并转化为java对象,经processor处理，后倒入db存储.<br>sequence diagram:<br><img src="//cloud-poc.github.io/2019/07/21/Spring-batch-01-single-process-demo/index/single-process-sequence.png" alt><br>主要配置文件  </p>
+<h4 id="SingleProcessConfiguration"><a href="#SingleProcessConfiguration" class="headerlink" title="SingleProcessConfiguration"></a>SingleProcessConfiguration</h4><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.akj.batch.configuration;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> lombok.extern.slf4j.Slf4j;</span><br><span class="line"><span class="keyword">import</span> org.akj.batch.constant.Constant;</span><br><span class="line"><span class="keyword">import</span> org.akj.batch.entity.Person;</span><br><span class="line"><span class="keyword">import</span> org.akj.batch.listener.CustomJobExcecutionListener;</span><br><span class="line"><span class="keyword">import</span> org.akj.batch.processor.PersonItemProcessor;</span><br><span class="line"><span class="keyword">import</span> org.akj.batch.repository.PeopleRepository;</span><br><span class="line"><span class="keyword">import</span> org.springframework.batch.core.Job;</span><br><span class="line"><span class="keyword">import</span> org.springframework.batch.core.Step;</span><br><span class="line"><span class="keyword">import</span> org.springframework.batch.core.StepContribution;</span><br><span class="line"><span class="keyword">import</span> org.springframework.batch.core.configuration.<span class="keyword">annotation</span>.EnableBatchProcessing;</span><br><span class="line"><span class="keyword">import</span> org.springframework.batch.core.configuration.<span class="keyword">annotation</span>.JobBuilderFactory;</span><br><span class="line"><span class="keyword">import</span> org.springframework.batch.core.configuration.<span class="keyword">annotation</span>.StepBuilderFactory;</span><br><span class="line"><span class="keyword">import</span> org.springframework.batch.core.launch.support.RunIdIncrementer;</span><br><span class="line"><span class="keyword">import</span> org.springframework.batch.core.scope.context.ChunkContext;</span><br><span class="line"><span class="keyword">import</span> org.springframework.batch.core.step.tasklet.Tasklet;</span><br><span class="line"><span class="keyword">import</span> org.springframework.batch.item.<span class="keyword">data</span>.RepositoryItemWriter;</span><br><span class="line"><span class="keyword">import</span> org.springframework.batch.item.<span class="keyword">data</span>.builder.RepositoryItemWriterBuilder;</span><br><span class="line"><span class="keyword">import</span> org.springframework.batch.item.file.FlatFileItemReader;</span><br><span class="line"><span class="keyword">import</span> org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;</span><br><span class="line"><span class="keyword">import</span> org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;</span><br><span class="line"><span class="keyword">import</span> org.springframework.batch.repeat.RepeatStatus;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.<span class="keyword">annotation</span>.Autowired;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.<span class="keyword">annotation</span>.Value;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.propertyeditors.CustomDateEditor;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.<span class="keyword">annotation</span>.Bean;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.<span class="keyword">annotation</span>.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.springframework.core.io.FileSystemResource;</span><br><span class="line"><span class="keyword">import</span> org.springframework.core.task.SimpleAsyncTaskExecutor;</span><br><span class="line"><span class="keyword">import</span> org.springframework.core.task.TaskExecutor;</span><br><span class="line"><span class="keyword">import</span> org.springframework.jdbc.core.JdbcTemplate;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.beans.PropertyEditor;</span><br><span class="line"><span class="keyword">import</span> java.io.File;</span><br><span class="line"><span class="keyword">import</span> java.text.DateFormat;</span><br><span class="line"><span class="keyword">import</span> java.text.SimpleDateFormat;</span><br><span class="line"><span class="keyword">import</span> java.util.HashMap;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@EnableBatchProcessing</span></span><br><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SingleSourceConfiguration</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">public</span> JobBuilderFactory jobBuilderFactory;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">public</span> StepBuilderFactory stepBuilderFactory;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> PeopleRepository repository;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> JdbcTemplate jdbcTemplate;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Value(<span class="meta-string">"<span class="subst">$&#123;batch.job.name&#125;</span>"</span>)</span></span><br><span class="line">    <span class="keyword">private</span> String jobName;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Value(<span class="meta-string">"<span class="subst">$&#123;batch.job.chunk.size&#125;</span>"</span>)</span></span><br><span class="line">    <span class="keyword">private</span> int chunkSize;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Value(<span class="meta-string">"<span class="subst">$&#123;batch.job.input.path&#125;</span>"</span>)</span></span><br><span class="line">    <span class="keyword">private</span> String inputFolder;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> FlatFileItemReader&lt;Person&gt; reader() &#123;</span><br><span class="line">        BeanWrapperFieldSetMapper&lt;Person&gt; beanMapper = new BeanWrapperFieldSetMapper&lt;Person&gt;();</span><br><span class="line">        beanMapper.setTargetType(Person.<span class="keyword">class</span>);</span><br><span class="line"></span><br><span class="line">        Map&lt;String, PropertyEditor&gt; customEditors = new HashMap&lt;String, PropertyEditor&gt;();</span><br><span class="line">        DateFormat dateFormatter = new SimpleDateFormat(<span class="string">"yyyy-MM-dd"</span>);</span><br><span class="line">        customEditors.put(<span class="string">"java.util.Date"</span>, new CustomDateEditor(dateFormatter, <span class="literal">false</span>));</span><br><span class="line">        beanMapper.setCustomEditors(customEditors);</span><br><span class="line">        <span class="keyword">return</span> new FlatFileItemReaderBuilder&lt;Person&gt;().name(<span class="string">"personItemReader"</span>)</span><br><span class="line">                .resource(new FileSystemResource(inputFolder + File.separatorChar + Constant.FILE_SOURCE)).delimited()</span><br><span class="line">                .names(new String[]&#123;<span class="string">"pid"</span>, <span class="string">"firstName"</span>, <span class="string">"lastName"</span>, <span class="string">"age"</span>, <span class="string">"gender"</span>, <span class="string">"dateOfBirth"</span>, <span class="string">"height"</span>,</span><br><span class="line">                        <span class="string">"weight"</span>&#125;)</span><br><span class="line">                .fieldSetMapper(beanMapper).build();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> PersonItemProcessor processor() &#123;</span><br><span class="line">        <span class="keyword">return</span> new PersonItemProcessor();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> RepositoryItemWriter&lt;Person&gt; writer() &#123;</span><br><span class="line">        <span class="keyword">return</span> new RepositoryItemWriterBuilder&lt;Person&gt;().repository(repository).methodName(<span class="string">"save"</span>).build();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> Job importUserJob(CustomJobExcecutionListener listener, Step step1) &#123;</span><br><span class="line">        <span class="keyword">return</span> jobBuilderFactory.<span class="keyword">get</span>(jobName).incrementer(new RunIdIncrementer()).listener(listener).flow(step1).end()</span><br><span class="line">                .build();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> Job importUserJobflow(CustomJobExcecutionListener listener, Step step1) &#123;</span><br><span class="line">        <span class="keyword">return</span> jobBuilderFactory.<span class="keyword">get</span>(jobName).listener(listener).start(step1()).on(<span class="string">"COMPLETED"</span>).to(step2(writer()))</span><br><span class="line">                .end().build();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> Step step1() &#123;</span><br><span class="line">        <span class="keyword">return</span> stepBuilderFactory.<span class="keyword">get</span>(<span class="string">"step1"</span>).tasklet(new Tasklet() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception &#123;</span><br><span class="line">                jdbcTemplate.execute(Constant.TRANCATE_TABLE_SQL);</span><br><span class="line">                log.debug(<span class="string">"successfully execute sql: "</span> + Constant.TRANCATE_TABLE_SQL);</span><br><span class="line">                <span class="keyword">return</span> RepeatStatus.FINISHED;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;).build();</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> Step step2(RepositoryItemWriter&lt;Person&gt; writer) &#123;</span><br><span class="line">        <span class="keyword">return</span> stepBuilderFactory.<span class="keyword">get</span>(<span class="string">"step2"</span>).&lt;Person, Person&gt;chunk(chunkSize).reader(reader()).processor(processor())</span><br><span class="line">                .writer(writer).taskExecutor(taskExecutor()).build();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> TaskExecutor taskExecutor() &#123;</span><br><span class="line">        <span class="keyword">return</span> new SimpleAsyncTaskExecutor(<span class="string">"spring batch"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="ScheduledJobLancherConfiguration"><a href="#ScheduledJobLancherConfiguration" class="headerlink" title="ScheduledJobLancherConfiguration"></a>ScheduledJobLancherConfiguration</h4><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.akj.batch.configuration;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.batch.core.Job;</span><br><span class="line"><span class="keyword">import</span> org.springframework.batch.core.JobParameters;</span><br><span class="line"><span class="keyword">import</span> org.springframework.batch.core.JobParametersBuilder;</span><br><span class="line"><span class="keyword">import</span> org.springframework.batch.core.JobParametersInvalidException;</span><br><span class="line"><span class="keyword">import</span> org.springframework.batch.core.launch.JobLauncher;</span><br><span class="line"><span class="keyword">import</span> org.springframework.batch.core.launch.support.SimpleJobLauncher;</span><br><span class="line"><span class="keyword">import</span> org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;</span><br><span class="line"><span class="keyword">import</span> org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;</span><br><span class="line"><span class="keyword">import</span> org.springframework.batch.core.repository.JobRepository;</span><br><span class="line"><span class="keyword">import</span> org.springframework.batch.core.repository.JobRestartException;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.<span class="keyword">annotation</span>.Autowired;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.<span class="keyword">annotation</span>.Value;</span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.<span class="keyword">annotation</span>.Bean;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.<span class="keyword">annotation</span>.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.<span class="keyword">annotation</span>.Profile;</span><br><span class="line"><span class="keyword">import</span> org.springframework.scheduling.<span class="keyword">annotation</span>.EnableScheduling;</span><br><span class="line"><span class="keyword">import</span> org.springframework.scheduling.<span class="keyword">annotation</span>.Scheduled;</span><br><span class="line"></span><br><span class="line"><span class="meta">@EnableScheduling</span></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@ConditionalOnProperty(<span class="meta-string">"batch.scheduling.enabled"</span>)</span></span><br><span class="line"><span class="meta">@Profile(&#123;<span class="meta-string">"master"</span>&#125;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ScheduledJobLancherConfiguration</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    Job job;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Value(<span class="meta-string">"<span class="subst">$&#123;batch.job.name&#125;</span>"</span>)</span></span><br><span class="line">    <span class="keyword">private</span> String jobName;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> JobRepository repository;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean(<span class="meta-string">"scheduledJobLauncher"</span>)</span></span><br><span class="line">    <span class="keyword">public</span> JobLauncher jobLauncher(JobRepository jobRepo) &#123;</span><br><span class="line">        SimpleJobLauncher simpleJobLauncher = new SimpleJobLauncher();</span><br><span class="line">        simpleJobLauncher.setJobRepository(jobRepo);</span><br><span class="line">        <span class="keyword">return</span> simpleJobLauncher;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Scheduled(cron = <span class="meta-string">"<span class="subst">$&#123;batch.job.scheduler.cron&#125;</span>"</span>)</span></span><br><span class="line">    <span class="keyword">public</span> void perform() throws JobExecutionAlreadyRunningException, JobRestartException,</span><br><span class="line">            JobInstanceAlreadyCompleteException, JobParametersInvalidException &#123;</span><br><span class="line">        JobParameters params = new JobParametersBuilder().addString(jobName, String.valueOf(System.currentTimeMillis()))</span><br><span class="line">                .toJobParameters();</span><br><span class="line">        jobLauncher(repository).run(job, params);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>配置文件 in application.yml</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">batch:</span></span><br><span class="line"><span class="attr">  scheduling:</span></span><br><span class="line"><span class="attr">    enabled:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">  partitioner:</span></span><br><span class="line"><span class="attr">    partition:</span> <span class="number">1</span> <span class="comment"># partition count, grid size</span></span><br><span class="line"><span class="attr">  job:</span></span><br><span class="line"><span class="attr">    name:</span> <span class="string">importUserDataTest</span></span><br><span class="line">    <span class="string">chunk.size:</span> <span class="number">20</span></span><br><span class="line"><span class="attr">    input:</span></span><br><span class="line"><span class="attr">      path:</span> <span class="attr">c:/temp/source</span></span><br><span class="line"><span class="attr">      filter:</span> <span class="string">'.csv'</span></span><br><span class="line"><span class="attr">    ouput:</span></span><br><span class="line"><span class="attr">      path:</span> <span class="attr">c:/temp/target</span></span><br><span class="line"><span class="attr">    failure:</span></span><br><span class="line"><span class="attr">      path:</span> <span class="attr">c:/temp/failure</span></span><br><span class="line"><span class="attr">    scheduler:</span></span><br><span class="line"><span class="attr">      cron:</span> <span class="number">0</span> <span class="string">*/1</span> <span class="string">*</span> <span class="string">*</span> <span class="string">*</span> <span class="string">?</span> <span class="comment">#[s] [m] [h] [d] [m] [w] [y]</span></span><br></pre></td></tr></table></figure>
+
+<p>single process可以对应大部分场景了，并且可以通过设置taskExecutor来支持多线程处理  </p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="keyword">public</span> TaskExecutor taskExecutor()&#123;</span><br><span class="line">    <span class="keyword">return</span> new SimpleAsyncTaskExecutor(<span class="string">"spring_batch"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="keyword">public</span> Step sampleStep(TaskExecutor taskExecutor) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.stepBuilderFactory.<span class="keyword">get</span>(<span class="string">"sampleStep"</span>)</span><br><span class="line">                                .&lt;String, String&gt;chunk(<span class="number">10</span>)</span><br><span class="line">                                .reader(itemReader())</span><br><span class="line">                                .writer(itemWriter())</span><br><span class="line">                                .taskExecutor(taskExecutor)</span><br><span class="line">                                .build();</span><br></pre></td></tr></table></figure>
+
+<p>当数据量或者处理步骤更加复杂的场景时，JVM多线程都难以应对时，spring batch也提供了远程分块和远程分区支持，把task调度到远程instance上进行然后聚合，下面演示一个主从架构的多实例remote partition处理架构</p>
+<h3 id="Remote-partition主从架构"><a href="#Remote-partition主从架构" class="headerlink" title="Remote partition主从架构"></a>Remote partition主从架构</h3><p>在single process的基础进行修改，保留处理流程step，并将其修改为master/slave step结构，主要流程为:  </p>
+<ol>
+<li>cron task trigger jobLauncher 运行job任务</li>
+<li>运行master step任务分区并存储在DB，public Map&lt;String, ExecutionContext&gt; partition(int gridSize)</li>
+<li>通过AMQP协议，将partitioned task(StepExecution)分派到message queue</li>
+<li>Slave node通过监听message queue，接受partioned task，运行slave step并更新运行结果</li>
+<li>所有step运行完成后，job complete.<br>主要配置:  </li>
+</ol>
+<h4 id="Partitioner-分区器"><a href="#Partitioner-分区器" class="headerlink" title="Partitioner 分区器"></a>Partitioner 分区器</h4><figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">package org.akj.batch.configuration.partitioner;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> lombok.extern.slf4j.Slf4j;</span><br><span class="line"><span class="keyword">import</span> org.akj.batch.util.PathMatchingResourcePatternResolver;</span><br><span class="line"><span class="keyword">import</span> org.springframework.batch.core.partition.support.Partitioner;</span><br><span class="line"><span class="keyword">import</span> org.springframework.batch.item.ExecutionContext;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.<span class="keyword">factory</span>.annotation.Value;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Component;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.File;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.util.Arrays;</span><br><span class="line"><span class="keyword">import</span> java.util.HashMap;</span><br><span class="line"><span class="keyword">import</span> java.util.<span class="built_in">Map</span>;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.atomic.AtomicInteger;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@Slf</span>4j</span><br><span class="line">public <span class="class"><span class="keyword">class</span> <span class="title">CustomMultiResourcePartitioner</span> <span class="keyword">implements</span> <span class="title">Partitioner</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Value</span>(<span class="string">"<span class="subst">$&#123;batch.job.input.path&#125;</span>"</span>)</span><br><span class="line">	private <span class="built_in">String</span> inputFolder;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Value</span>(<span class="string">"<span class="subst">$&#123;batch.job.input.filter&#125;</span>"</span>)</span><br><span class="line">	private <span class="built_in">String</span> fileFilter;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Value</span>(<span class="string">"<span class="subst">$&#123;batch.partitioner.partition&#125;</span>"</span>)</span><br><span class="line">	private <span class="built_in">int</span> partition;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	public <span class="built_in">Map</span>&lt;<span class="built_in">String</span>, ExecutionContext&gt; partition(<span class="built_in">int</span> gridSize) &#123;</span><br><span class="line">		<span class="built_in">Map</span>&lt;<span class="built_in">String</span>, ExecutionContext&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;(gridSize);</span><br><span class="line">		AtomicInteger partitionNumber = <span class="keyword">new</span> AtomicInteger(<span class="number">1</span>);</span><br><span class="line">		PathMatchingResourcePatternResolver resolver = <span class="keyword">new</span> PathMatchingResourcePatternResolver();</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			<span class="built_in">String</span>[] resources = resolver.getResources(inputFolder, fileFilter);</span><br><span class="line">			log.info(<span class="string">"started partitioning, "</span> + resources.length + <span class="string">" resources been found as input"</span>);</span><br><span class="line">			Arrays.stream(resources).forEach(filePath -&gt; &#123;</span><br><span class="line">					ExecutionContext context = <span class="keyword">new</span> ExecutionContext();</span><br><span class="line">					context.putString(<span class="string">"fileName"</span>, filePath);</span><br><span class="line">					map.put(<span class="string">"partition"</span> + partitionNumber.getAndIncrement(), context);</span><br><span class="line">			&#125;);</span><br><span class="line">		&#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">			log.error(<span class="string">"system error, invalid input resource: "</span> + inputFolder + File.separatorChar + fileFilter);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span> map;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="AMQP配置"><a href="#AMQP配置" class="headerlink" title="AMQP配置"></a>AMQP配置</h4><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.akj.batch.configuration.partitioner;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> lombok.extern.slf4j.Slf4j;</span><br><span class="line"><span class="keyword">import</span> org.springframework.amqp.core.Binding;</span><br><span class="line"><span class="keyword">import</span> org.springframework.amqp.core.BindingBuilder;</span><br><span class="line"><span class="keyword">import</span> org.springframework.amqp.core.Queue;</span><br><span class="line"><span class="keyword">import</span> org.springframework.amqp.core.TopicExchange;</span><br><span class="line"><span class="keyword">import</span> org.springframework.amqp.rabbit.AsyncRabbitTemplate;</span><br><span class="line"><span class="keyword">import</span> org.springframework.amqp.rabbit.core.RabbitTemplate;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Bean;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.springframework.integration.amqp.outbound.AsyncAmqpOutboundGateway;</span><br><span class="line"><span class="keyword">import</span> org.springframework.integration.annotation.ServiceActivator;</span><br><span class="line"><span class="keyword">import</span> org.springframework.integration.channel.DirectChannel;</span><br><span class="line"><span class="keyword">import</span> org.springframework.integration.channel.NullChannel;</span><br><span class="line"><span class="keyword">import</span> org.springframework.integration.channel.QueueChannel;</span><br><span class="line"><span class="keyword">import</span> org.springframework.integration.config.EnableIntegration;</span><br><span class="line"><span class="keyword">import</span> org.springframework.integration.core.MessagingTemplate;</span><br><span class="line"><span class="keyword">import</span> org.springframework.messaging.PollableChannel;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@EnableIntegration</span></span><br><span class="line"><span class="meta">@Slf</span>4j</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RemotePartitioningAMQPConfiguration</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Bean</span></span><br><span class="line">	<span class="meta">@ServiceActivator</span>(inputChannel = <span class="string">"outboundRequests"</span>)</span><br><span class="line">	<span class="keyword">public</span> <span class="function">AsyncAmqpOutboundGateway <span class="title">amqpOutboundEndpoint</span><span class="params">(AsyncRabbitTemplate asyncTemplate)</span> </span>&#123;</span><br><span class="line">		AsyncAmqpOutboundGateway gateway = <span class="keyword">new</span> AsyncAmqpOutboundGateway(asyncTemplate);</span><br><span class="line">		gateway.setExchangeName(<span class="string">"user-service.batch"</span>);</span><br><span class="line">		gateway.setRoutingKey(<span class="string">"partition.requests"</span>);</span><br><span class="line">		gateway.setRequiresReply(<span class="keyword">false</span>);</span><br><span class="line"></span><br><span class="line">		log.info(<span class="string">"Created AMQP Outbound gateway---&gt; "</span> + gateway.toString());</span><br><span class="line">		<span class="keyword">return</span> gateway;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Bean</span></span><br><span class="line">	<span class="keyword">public</span> <span class="function">AsyncRabbitTemplate <span class="title">asyncTemplate</span><span class="params">(RabbitTemplate rabbitTemplate)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">new</span> AsyncRabbitTemplate(rabbitTemplate);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Bean</span></span><br><span class="line">	<span class="keyword">public</span> <span class="function">QueueChannel <span class="title">inboundRequests</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">new</span> QueueChannel();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Bean</span></span><br><span class="line">	<span class="keyword">public</span> <span class="function">DirectChannel <span class="title">outboundRequests</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">new</span> DirectChannel();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Bean</span></span><br><span class="line">	<span class="keyword">public</span> <span class="function">PollableChannel <span class="title">outboundStaging</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">new</span> NullChannel();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Bean</span></span><br><span class="line">	<span class="keyword">public</span> <span class="function">Queue <span class="title">requestQueue</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">new</span> Queue(<span class="string">"partition.requests"</span>, <span class="keyword">true</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Bean</span></span><br><span class="line">	<span class="function">Binding <span class="title">binding</span><span class="params">(Queue queue, TopicExchange exchange)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> BindingBuilder.bind(queue).to(exchange).with(<span class="string">"partition.requests"</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Bean</span></span><br><span class="line">	<span class="keyword">public</span> <span class="function">TopicExchange <span class="title">batch</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">new</span> TopicExchange(<span class="string">"user-service.batch"</span>, <span class="keyword">true</span>, <span class="keyword">false</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Bean</span></span><br><span class="line">	<span class="keyword">public</span> <span class="function">MessagingTemplate <span class="title">messageTemplate</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		MessagingTemplate messagingTemplate = <span class="keyword">new</span> MessagingTemplate(outboundRequests());</span><br><span class="line">		messagingTemplate.setReceiveTimeout(<span class="number">200000</span>l);</span><br><span class="line">		<span class="keyword">return</span> messagingTemplate;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	 <span class="meta">@Bean</span></span><br><span class="line">    <span class="meta">@Profile</span>(&#123;<span class="string">"slave"</span>&#125;)</span><br><span class="line">    <span class="meta">@ServiceActivator</span>(inputChannel = <span class="string">"inboundRequests"</span>, outputChannel = <span class="string">"outboundStaging"</span>, async = <span class="string">"true"</span>, poller = &#123;<span class="meta">@Poller</span>(fixedRate = <span class="string">"1000"</span>)&#125;)</span><br><span class="line">    <span class="keyword">public</span> <span class="function">StepExecutionRequestHandler <span class="title">stepExecutionRequestHandler</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        StepExecutionRequestHandler stepExecutionRequestHandler = <span class="keyword">new</span> StepExecutionRequestHandler();</span><br><span class="line">        BeanFactoryStepLocator stepLocator = <span class="keyword">new</span> BeanFactoryStepLocator();</span><br><span class="line">        stepLocator.setBeanFactory(<span class="keyword">this</span>.applicationContext);</span><br><span class="line">        stepExecutionRequestHandler.setStepLocator(stepLocator);</span><br><span class="line">        stepExecutionRequestHandler.setJobExplorer(<span class="keyword">this</span>.jobExplorer);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> stepExecutionRequestHandler;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="meta">@Profile</span>(&#123;<span class="string">"slave"</span>&#125;)</span><br><span class="line">    <span class="keyword">public</span> <span class="function">AmqpInboundChannelAdapter <span class="title">inbound</span><span class="params">(SimpleMessageListenerContainer listenerContainer)</span> </span>&#123;</span><br><span class="line">        AmqpInboundChannelAdapter adapter = <span class="keyword">new</span> AmqpInboundChannelAdapter(listenerContainer);</span><br><span class="line">        adapter.setOutputChannel(inboundRequests);</span><br><span class="line">        adapter.afterPropertiesSet();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> adapter;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> <span class="function">SimpleMessageListenerContainer <span class="title">container</span><span class="params">(ConnectionFactory connectionFactory)</span> </span>&#123;</span><br><span class="line">        SimpleMessageListenerContainer container = <span class="keyword">new</span> SimpleMessageListenerContainer(connectionFactory);</span><br><span class="line">        container.setQueueNames(<span class="string">"partition.requests"</span>);</span><br><span class="line">        <span class="comment">// container.setConcurrency("10");</span></span><br><span class="line">        <span class="comment">// container.setConcurrentConsumers(1);</span></span><br><span class="line">        container.setErrorHandler(t -&gt; &#123;</span><br><span class="line">            log.<span class="keyword">error</span>(<span class="string">"message listener error,"</span> + t.getMessage());</span><br><span class="line">        &#125;);</span><br><span class="line">        container.setAutoStartup(<span class="keyword">false</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> container;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>demo中用profile进行了区分，可以主从方式，一主多从，暂时不支持mixed模式，主节点无法兼做从节点，理论上可以做到<br>源代码</p>
+<p>参考资料:<br><a href="https://blog.51cto.com/13501268/2177746" target="_blank" rel="noopener">https://blog.51cto.com/13501268/2177746</a><br><a href="https://cloud.tencent.com/developer/article/1096337" target="_blank" rel="noopener">https://cloud.tencent.com/developer/article/1096337</a><br><a href="https://asardana.com/2018/01/01/scaling-spring-batch-on-aws-with-remote-partitioning/" target="_blank" rel="noopener">https://asardana.com/2018/01/01/scaling-spring-batch-on-aws-with-remote-partitioning/</a><br><a href="https://docs.spring.io/spring-integration/docs/5.1.6.RELEASE/reference/html/#amqp" target="_blank" rel="noopener">https://docs.spring.io/spring-integration/docs/5.1.6.RELEASE/reference/html/#amqp</a><br><a href="https://www.docs4dev.com/docs/zh/spring-batch/4.1.x/reference/spring-batch-integration.html" target="_blank" rel="noopener">https://www.docs4dev.com/docs/zh/spring-batch/4.1.x/reference/spring-batch-integration.html</a>  </p>
+
+      
+    </div>
+
+    
+
+    
+      
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Jamie Zhang</li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    
+    <a href="https://cloud-poc.github.io/2019/07/21/Spring-batch-01-single-process-demo/index/" title="spring batch - single process & remote partitioning(multi instances)">https://cloud-poc.github.io/2019/07/21/Spring-batch-01-single-process-demo/index/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/Spring-Batch/" rel="tag"><i class="fa fa-tag"></i> Spring Batch</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/15/Spring-Cloud-Demo-Overview/index/" rel="next" title="Spring Cloud (00) - Demo overview">
+                <i class="fa fa-chevron-left"></i> Spring Cloud (00) - Demo overview
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/20190713213835-3.jpg" alt="Jamie Zhang">
+            
+              <p class="site-author-name" itemprop="name">Jamie Zhang</p>
+              <div class="site-description motion-element" itemprop="description">Jamie，Senior Software Engineer, Open source enthusiasts, PMP,Scrum master</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">5</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">categories</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/akjamie" title="GitHub &rarr; https://github.com/akjamie" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:akjamie.zhang@outlook.com" title="E-Mail &rarr; mailto:akjamie.zhang@outlook.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            </div>
+          
+
+          
+             <div class="cc-license motion-element" itemprop="license">
+              
+              
+                
+              
+              
+              
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+             </div>
+          
+
+          
+          
+
+          
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#单个实例处理-且单个文件"><span class="nav-number">1.</span> <span class="nav-text">单个实例处理(且单个文件)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#SingleProcessConfiguration"><span class="nav-number">1.1.</span> <span class="nav-text">SingleProcessConfiguration</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ScheduledJobLancherConfiguration"><span class="nav-number">1.2.</span> <span class="nav-text">ScheduledJobLancherConfiguration</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Remote-partition主从架构"><span class="nav-number">2.</span> <span class="nav-text">Remote partition主从架构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Partitioner-分区器"><span class="nav-number">2.1.</span> <span class="nav-text">Partitioner 分区器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#AMQP配置"><span class="nav-number">2.2.</span> <span class="nav-text">AMQP配置</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jamie Zhang</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+  
+    
+    
+  
+  <script color="0,0,255" opacity="0.5" zindex="-1" count="99" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+
+  
+  
+  
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.2.0"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.2.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>
