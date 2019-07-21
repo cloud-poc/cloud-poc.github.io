@@ -426,7 +426,9 @@ public class RemotePartitioningAMQPConfiguration {
     }
 }
 ```
-demo中用profile进行了区分，可以主从方式，一主多从，暂时不支持mixed模式，主节点无法兼做从节点，理论上可以做到。
+demo中用profile进行了区分，可以主从方式，一主多从，暂时不支持mixed模式，主节点无法兼做从节点，理论上可以做到。  
+spring.profiles.active=master 主节点，可以进行batch任务调度和任务分区和job状态监控  
+spring.profiles.active-slace 从节点，从message queue中拉去任务并执行，更新任务完成情况到db  
 源码 - https://github.com/cloud-poc/springbatch-userservice
 
 
