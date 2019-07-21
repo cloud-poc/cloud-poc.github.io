@@ -251,7 +251,8 @@ public Step sampleStep(TaskExecutor taskExecutor) {
 3. 通过AMQP协议，将partitioned task(StepExecution)分派到message queue
 4. Slave node通过监听message queue，接受partioned task，运行slave step并更新运行结果
 5. 所有step运行完成后，job complete.
-主要配置:  
+架构如下:
+![](remote-partition-diagram.png)
 
 #### Partitioner 分区器
 ```
@@ -425,9 +426,8 @@ public class RemotePartitioningAMQPConfiguration {
     }
 }
 ```
-demo中用profile进行了区分，可以主从方式，一主多从，暂时不支持mixed模式，主节点无法兼做从节点，理论上可以做到
-源代码
-
+demo中用profile进行了区分，可以主从方式，一主多从，暂时不支持mixed模式，主节点无法兼做从节点，理论上可以做到。
+源码 - https://github.com/cloud-poc/springbatch-userservice
 
 
 参考资料:  
